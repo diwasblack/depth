@@ -11,7 +11,7 @@ from .layers import (
 from .loss_functions import mean_squared_error, cross_entropy
 
 
-class SequentialNeuralNet():
+class NeuralNet():
     """
     Implementation of sequential backpropagation neural network
     """

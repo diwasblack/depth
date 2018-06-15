@@ -2,7 +2,7 @@ import logging
 
 import numpy as np
 
-from depth.sequential_nn import SequentialNeuralNet
+from depth.sequential import NeuralNet
 from depth.helpers import one_hot_encoding
 
 
@@ -15,7 +15,7 @@ def main():
     input_data_dimension = 10
     output_data_dimension = 3
 
-    nn_object = SequentialNeuralNet()
+    nn_object = NeuralNet()
     nn_object.add_layer(units=32, activation_function="tanh",
                         input_dimension=input_data_dimension)
     nn_object.add_layer(units=64, activation_function="tanh")

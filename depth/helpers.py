@@ -9,6 +9,9 @@ def one_hot_encoding(targets):
     num_labels+1 is the total number of labels in the data
     """
 
-    output_dimension = np.max(targets) + 1
+    # Convert targets to integer
+    int_targets = targets.astype(int)
 
-    return np.eye(output_dimension)[targets].T
+    output_dimension = np.max(int_targets) + 1
+
+    return np.eye(output_dimension)[int_targets].T

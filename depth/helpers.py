@@ -15,3 +15,10 @@ def one_hot_encoding(targets):
     output_dimension = np.max(int_targets) + 1
 
     return np.eye(output_dimension)[int_targets].T
+
+
+def vector_to_label(input_matrix):
+    """
+    Convert the vector of probabilites to the class label
+    """
+    return np.argmax(input_matrix, axis=0)

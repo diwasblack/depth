@@ -78,7 +78,7 @@ class SequentialNeuralNet():
             # Propagate delta through layers
             delta = layer.backprop(delta, self.learning_rate)
 
-    def train(self, input_matrix, target_matrix):
+    def train(self, input_matrix, target_matrix, logging_frequency=1000):
         number_of_iterations = 0
 
         while(True):
@@ -92,7 +92,7 @@ class SequentialNeuralNet():
             # Calculate the loss occured
             loss = self.loss_function(predicted_output, target_matrix)
 
-            if(number_of_iterations % 1000 == 0):
+            if(number_of_iterations % logging_frequency == 0):
                 logging.info("Cost: {}".format(loss))
 
             if(loss < self.error_threshold):

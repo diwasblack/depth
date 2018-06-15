@@ -3,6 +3,7 @@ import logging
 import numpy as np
 
 from depth.sequential_nn import SequentialNeuralNet
+from depth.helpers import one_hot_encoding
 
 
 def main():
@@ -25,7 +26,8 @@ def main():
     targets = np.random.randint(
         0, output_data_dimension, number_of_samples).reshape(-1)
 
-    output_data = np.eye(output_data_dimension)[targets].T
+    # Convert labels to one hot encoding
+    output_data = one_hot_encoding(targets)
 
     nn_object.train(input_data, output_data)
 

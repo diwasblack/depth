@@ -15,8 +15,9 @@ def main():
     input_data_dimension = 10
     output_data_dimension = 3
 
-    nn_object = SequentialNeuralNet(input_dimension=input_data_dimension)
-    nn_object.add_layer(units=32, activation_function="tanh")
+    nn_object = SequentialNeuralNet()
+    nn_object.add_layer(units=32, activation_function="tanh",
+                        input_dimension=input_data_dimension)
     nn_object.add_layer(units=64, activation_function="tanh")
     nn_object.add_layer(units=output_data_dimension,
                         activation_function="softmax")

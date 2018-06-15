@@ -16,18 +16,18 @@ class SequentialNeuralNet():
     Implementation of sequential backpropagation neural network
     """
 
-    def __init__(self, input_dimension, layers_filename=""):
+    def __init__(self, layers_filename=""):
         # List to hold the layers
         self.layers = []
-        self.input_dimension = input_dimension
         self.learning_rate = None
 
         self.loss_function = None
+        self.loss_function_derivative = None
         self.layers_filename = layers_filename
 
-    def add_layer(self, activation_function="tanh", units=64):
+    def add_layer(self, activation_function="tanh", units=64, input_dimension=None):
         if(not(self.layers)):
-            previous_units = self.input_dimension
+            previous_units = input_dimension
         else:
             previous_units = self.layers[-1].output_units
 

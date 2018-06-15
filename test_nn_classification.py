@@ -2,7 +2,7 @@ import logging
 
 import numpy as np
 
-from depth import SequentialNeuralNet
+from depth.sequential_nn import SequentialNeuralNet
 
 
 def main():

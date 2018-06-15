@@ -93,6 +93,19 @@ class SequentialNeuralNet():
 
             logging.info("Layer backup to the file completed")
 
+    def load_layer_weights(self):
+        """
+        Load layer information from a file
+        """
+
+        if(self.layers_filename):
+            logging.info("Trying to load layers from the file")
+
+            with gzip.open(self.layers_filename, "rb") as file:
+                self.layers = pickle.load(file)
+
+            logging.info("Succefully loaded layers from file")
+
     def train(self, input_matrix, target_matrix, logging_frequency=1000,
               weight_backup_frequency=100, weights_filename=""):
         number_of_iterations = 0

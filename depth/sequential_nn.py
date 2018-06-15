@@ -1,4 +1,6 @@
 import logging
+import pickle
+import gzip
 
 import numpy as np
 
@@ -14,13 +16,14 @@ class SequentialNeuralNet():
     Implementation of sequential backpropagation neural network
     """
 
-    def __init__(self, input_dimension):
+    def __init__(self, input_dimension, layers_filename=""):
         # List to hold the layers
         self.layers = []
         self.input_dimension = input_dimension
         self.learning_rate = None
 
         self.loss_function = None
+        self.layers_filename = layers_filename
 
     def add_layer(self, activation_function="tanh", units=64):
         if(not(self.layers)):
@@ -78,7 +81,20 @@ class SequentialNeuralNet():
             # Propagate delta through layers
             delta = layer.backprop(delta, self.learning_rate)
 
-    def train(self, input_matrix, target_matrix, logging_frequency=1000):
+    def dump_layer_weights(self):
+        """
+        Update layer weights periodically in a file
+        """
+        if(self.layers_filename):
+            logging.info("Starting a backup of layers to a file")
+
+            with gzip.open(self.layers_filename, "wb") as file:
+                pickle.dump(self.layers, file)
+
+            logging.info("Layer backup to the file completed")
+
+    def train(self, input_matrix, target_matrix, logging_frequency=1000,
+              weight_backup_frequency=100, weights_filename=""):
         number_of_iterations = 0
 
         while(True):
@@ -89,7 +105,6 @@ class SequentialNeuralNet():
             delta = self.loss_function_derivative(
                 predicted_output, target_matrix)
 
-            # Calculate the loss occured
             loss = self.loss_function(predicted_output, target_matrix)
 
             if(number_of_iterations % logging_frequency == 0):
@@ -97,6 +112,9 @@ class SequentialNeuralNet():
 
             if(loss < self.error_threshold):
                 break
+
+            if(number_of_iterations % weight_backup_frequency == 0):
+                self.dump_layer_weights()
 
             # Update weights using backpropagation
             self.backpropagation(delta)

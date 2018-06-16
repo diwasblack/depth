@@ -22,3 +22,24 @@ def vector_to_label(input_matrix):
     Convert the vector of probabilites to the class label
     """
     return np.argmax(input_matrix, axis=0)
+
+
+def train_test_split(input_matrix, output_matrix, test_size=0.33):
+    data_size = input_matrix.shape[1]
+
+    # Generate random permutations
+    permutations = np.random.permutation(data_size)
+
+    # Shuffle input and output matrix
+    input_matrix = input_matrix[:, permutations]
+    output_matrix = output_matrix[permutations]
+
+    training_size = int((1 - test_size) * data_size)
+
+    x_train = input_matrix[:, :training_size]
+    x_test = input_matrix[:, training_size:]
+
+    y_train = output_matrix[:training_size]
+    y_test = output_matrix[training_size:]
+
+    return x_train, x_test, y_train, y_test

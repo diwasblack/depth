@@ -108,7 +108,7 @@ class NeuralNet():
 
     def train(self, input_matrix, target_matrix, logging_frequency=1000,
               weight_backup_frequency=100, weights_filename=""):
-        number_of_iterations = 0
+        number_of_iterations = 1
 
         while(True):
             # Propagate the input forward

@@ -3,6 +3,7 @@ import logging
 import numpy as np
 
 from depth.sequential import NeuralNet
+from depth.loss_functions import mean_squared_error
 
 
 def main():
@@ -27,8 +28,10 @@ def main():
 
     nn_object.train(input_data, output_data)
 
-    print(output_data)
-    print(nn_object.predict(input_data))
+    predicted_values = nn_object.predict(input_data)
+
+    print("Mean Squared Error: {}".format(mean_squared_error(
+        predicted_values, output_data)))
 
 
 if __name__ == "__main__":

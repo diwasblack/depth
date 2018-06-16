@@ -72,6 +72,10 @@ class LayerBase():
 
         self.update_weights(weight_update)
 
+        # Clean up memory of input and activation values
+        self.input_values = None
+        self.activation_values = None
+
         return new_delta
 
 

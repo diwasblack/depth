@@ -125,11 +125,12 @@ class NeuralNet():
             if(loss < self.error_threshold):
                 break
 
-            if(number_of_iterations % weight_backup_frequency == 0):
-                self.dump_layer_weights()
-
             # Update weights using backpropagation
             self.backpropagation(delta)
+
+            # NOTE dump layers only after backpropagation update
+            if(number_of_iterations % weight_backup_frequency == 0):
+                self.dump_layer_weights()
 
             number_of_iterations += 1
 

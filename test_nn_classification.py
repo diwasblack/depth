@@ -3,7 +3,8 @@ import logging
 import numpy as np
 
 from depth.sequential import NeuralNet
-from depth.helpers import one_hot_encoding
+from depth.helpers import one_hot_encoding, vector_to_label
+from depth.metrics import categorical_accuracy
 
 
 def main():
@@ -32,8 +33,11 @@ def main():
 
     nn_object.train(input_data, output_data)
 
-    print(output_data)
-    print(nn_object.predict(input_data))
+    predicted_output = nn_object.predict(input_data)
+    predicted_labels = vector_to_label(predicted_output)
+
+    print("Accuracy: {}%".format(100*categorical_accuracy(
+        predicted_labels, targets)))
 
 
 if __name__ == "__main__":

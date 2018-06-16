@@ -13,15 +13,14 @@ class LayerBase():
     Base class for the neural network layers
     """
 
-    # TODO Add bias in each layer
-
     def __init__(self, input_units, output_units, use_softmax=False):
         self.input_units = input_units
         self.output_units = output_units
 
         # Randomly initialize weights in the range [-0.5, 0.5]
+        # Add bias unit to each layer
         self.weights = -0.5 + \
-            np.random.rand(self.output_units, self.input_units)
+            np.random.rand(self.output_units, self.input_units+1)
 
         self.activation_function = None
         self.activation_function_derivative = None
@@ -35,10 +34,14 @@ class LayerBase():
         """
         Layer method to compute the activation values during forward pass
         """
-        self.input_values = np.copy(input_matrix)
+
+        # Augment input data to include activation from bias unit
+        bias_units = np.ones((1, input_matrix.shape[1]))
+
+        self.input_values = np.vstack((bias_units, input_matrix[:]))
 
         # Compute the linear combination of weight and layer input
-        linear_combination = np.dot(self.weights, input_matrix)
+        linear_combination = np.dot(self.weights, self.input_values)
 
         # Compute the activation value
         self.activation_values = self.activation_function(linear_combination)
@@ -53,6 +56,11 @@ class LayerBase():
         self.weights = self.weights - weight_update
 
     def backprop(self, delta, eta):
+
+        if(self.weights.shape[0] != delta.shape[0]):
+            # Remove the delta for the bias
+            delta = delta[1:, :]
+
         dloss_dz = self.calcuate_dloss_dz(delta)
 
         # Calculate the delta for the next layer

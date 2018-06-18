@@ -7,8 +7,9 @@ import numpy as np
 from .layers import (
     TanhLayer, ReluLayer, LinearLayer, SigmoidLayer, SoftmaxLayer
 )
-
 from .loss_functions import mean_squared_error, cross_entropy
+from .helpers import vector_to_label
+from .metrics import categorical_accuracy
 
 
 class NeuralNet():
@@ -103,10 +104,27 @@ class NeuralNet():
 
         logging.info("Succefully loaded layers from file")
 
+    def prediction_accuracy(self, predicted_output, target_matrix):
+        """
+        Convert the output probabilites and calculate the accuracy
+        """
+
+        # Convert output probabilites to labels
+        predicted_labels = vector_to_label(predicted_output)
+
+        # TODO find a better way
+        # Convert target probabilites to labels
+        target_labels = vector_to_label(target_matrix)
+
+        # Calculate the accuracy
+        accuracy = categorical_accuracy(predicted_labels, target_labels)
+
+        return accuracy
+
     def train(self, input_matrix, target_matrix, max_iterations=1000,
               logging_frequency=1000, weight_backup_frequency=100,
-              layers_filename="",
-              training_costs=None):
+              layers_filename="", training_logger=None
+              ):
         """
         Train the neural network contructed
 
@@ -117,17 +135,14 @@ class NeuralNet():
         max_iterations: the maximum number of iterations
         logging_frequency: the frequency of logging the training cost
         weight_backup_frequency: the frequency of storing the weights to a file
-        layers_filename: the file to use to store the layers 
+        layers_filename: the file to use to store the layers
 
-        training_costs: an array to hold the costs during the training
+        training_costs: a list to hold the costs during the training
+        training_accuracies: a list to hold the prediction accuracy during
+            training
 
         """
         number_of_iterations = 1
-
-        if(type(training_costs) == list):
-            store_training_costs = True
-        else:
-            store_training_costs = False
 
         if(layers_filename):
             store_layers = True
@@ -143,9 +158,13 @@ class NeuralNet():
                 predicted_output, target_matrix)
 
             loss = self.loss_function(predicted_output, target_matrix)
+            accuracy = self.prediction_accuracy(
+                predicted_output, target_matrix)
 
-            if(store_training_costs):
-                training_costs.append(loss)
+            log_message = "Loss: {}, Accuracy:{}".format(
+                loss, accuracy)
+
+            training_logger.info(log_message)
 
             if(number_of_iterations % logging_frequency == 0):
                 logging.info("Cost: {}".format(loss))

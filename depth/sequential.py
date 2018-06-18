@@ -158,16 +158,16 @@ class NeuralNet():
                 predicted_output, target_matrix)
 
             loss = self.loss_function(predicted_output, target_matrix)
-            accuracy = self.prediction_accuracy(
-                predicted_output, target_matrix)
 
-            log_message = "Loss: {}, Accuracy:{}".format(
-                loss, accuracy)
-
-            training_logger.info(log_message)
-
-            if(number_of_iterations % logging_frequency == 0):
-                logging.info("Cost: {}".format(loss))
+            if(training_logger):
+                accuracy = self.prediction_accuracy(
+                    predicted_output, target_matrix)
+                log_message = "Loss: {}, Accuracy:{}".format(
+                    loss, accuracy)
+                training_logger.info(log_message)
+            else:
+                if(number_of_iterations % logging_frequency == 0):
+                    logging.info("Loss: {}".format(loss))
 
             # Update weights using backpropagation
             self.backpropagation(delta)

@@ -162,8 +162,8 @@ class NeuralNet():
             if(training_logger):
                 accuracy = self.prediction_accuracy(
                     predicted_output, target_matrix)
-                log_message = "Loss: {}, Accuracy:{}".format(
-                    loss, accuracy)
+                log_message = "Iteration: {} Loss: {}, Accuracy:{}".format(
+                    number_of_iterations, loss, accuracy)
                 training_logger.info(log_message)
             else:
                 if(number_of_iterations % logging_frequency == 0):

@@ -137,9 +137,7 @@ class NeuralNet():
         weight_backup_frequency: the frequency of storing the weights to a file
         layers_filename: the file to use to store the layers
 
-        training_costs: a list to hold the costs during the training
-        training_accuracies: a list to hold the prediction accuracy during
-            training
+        training_logger: the logger object to use for report training information
 
         """
         number_of_iterations = 1

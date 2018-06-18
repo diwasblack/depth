@@ -16,14 +16,13 @@ class NeuralNet():
     Implementation of sequential backpropagation neural network
     """
 
-    def __init__(self, layers_filename=""):
+    def __init__(self):
         # List to hold the layers
         self.layers = []
         self.learning_rate = None
 
         self.loss_function = None
         self.loss_function_derivative = None
-        self.layers_filename = layers_filename
 
     def add_layer(self, activation_function="tanh", units=64, input_dimension=None):
         if(not(self.layers)):
@@ -81,33 +80,31 @@ class NeuralNet():
             # Propagate delta through layers
             delta = layer.backprop(delta, self.learning_rate)
 
-    def dump_layer_weights(self):
+    def dump_layer_weights(self, layers_filename):
         """
         Update layer weights periodically in a file
         """
-        if(self.layers_filename):
-            logging.info("Starting a backup of layers to a file")
+        logging.info("Starting a backup of layers to a file")
 
-            with gzip.open(self.layers_filename, "wb") as file:
-                pickle.dump(self.layers, file)
+        with gzip.open(layers_filename, "wb") as file:
+            pickle.dump(self.layers, file)
 
-            logging.info("Layer backup to the file completed")
+        logging.info("Layer backup to the file completed")
 
-    def load_layer_weights(self):
+    def load_layer_weights(self, layers_filename):
         """
         Load layer information from a file
         """
 
-        if(self.layers_filename):
-            logging.info("Trying to load layers from the file")
+        logging.info("Trying to load layers from the file")
 
-            with gzip.open(self.layers_filename, "rb") as file:
-                self.layers = pickle.load(file)
+        with gzip.open(layers_filename, "rb") as file:
+            self.layers = pickle.load(file)
 
-            logging.info("Succefully loaded layers from file")
+        logging.info("Succefully loaded layers from file")
 
     def train(self, input_matrix, target_matrix, logging_frequency=1000,
-              weight_backup_frequency=100, weights_filename="",
+              weight_backup_frequency=100, layers_filename="",
               training_costs=None):
         """
         Train the neural network contructed
@@ -118,7 +115,7 @@ class NeuralNet():
 
         logging_frequency: the frequency of logging the training cost
         weight_backup_frequency: the frequency of storing the weights to a file
-        weights_filename: the file to use to store the layers
+        layers_filename: the file to use to store the layers 
 
         training_costs: an array to hold the costs during the training
 
@@ -127,6 +124,13 @@ class NeuralNet():
 
         if(type(training_costs) == list):
             store_training_costs = True
+        else:
+            store_training_costs = False
+
+        if(layers_filename):
+            store_layers = True
+        else:
+            store_layers = False
 
         while(True):
             # Propagate the input forward
@@ -151,8 +155,9 @@ class NeuralNet():
             self.backpropagation(delta)
 
             # NOTE dump layers only after backpropagation update
-            if(number_of_iterations % weight_backup_frequency == 0):
-                self.dump_layer_weights()
+            if(store_layers and
+                    number_of_iterations % weight_backup_frequency == 0):
+                self.dump_layer_weights(layers_filename)
 
             number_of_iterations += 1
 

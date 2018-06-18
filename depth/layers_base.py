@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 
 
@@ -93,3 +95,16 @@ class NonLinearBackprop():
 class LinearBackprop():
     def calcuate_dloss_dz(self, delta):
         return delta
+
+
+class XavierWeightInitializer():
+    """
+    An implementation of Xavier weight initialization
+
+    See:
+    http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf
+    """
+
+    def initialize_weights(self, input_units, output_units):
+        self.weights = np.random.rand(output_units, input_units+1) * \
+                math.sqrt(1.0 / input_units)

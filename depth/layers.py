@@ -1,26 +1,10 @@
-import math
-import numpy as np
-
-from .layers_base import LayerBase, NonLinearBackprop, LinearBackprop
+from .layers_base import (
+    LayerBase, NonLinearBackprop, LinearBackprop, XavierWeightInitializer)
 from .activations import (
     hyperbolic_tangent, hyperbolic_tangent_derivative,
     relu, relu_derivative,
     sigmoid_function, sigmoid_function_derivative,
-    softmax_function
-)
-
-
-class XavierWeightInitializer():
-    """
-    An implementation of Xavier weight initialization
-
-    See:
-    http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf
-    """
-
-    def initialize_weights(self, input_units, output_units):
-        self.weights = np.random.rand(output_units, input_units+1) * \
-                math.sqrt(1.0 / input_units)
+    softmax_function)
 
 
 class TanhLayer(NonLinearBackprop, LayerBase, XavierWeightInitializer):

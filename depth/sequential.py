@@ -179,6 +179,10 @@ class NeuralNet():
 
             if(loss < self.error_threshold or
                     number_of_iterations == max_iterations):
+
+                # Dump layers information before exiting
+                if(store_layers):
+                    self.dump_layer_weights(layers_filename)
                 break
 
             number_of_iterations += 1

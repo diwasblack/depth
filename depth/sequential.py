@@ -103,8 +103,9 @@ class NeuralNet():
 
         logging.info("Succefully loaded layers from file")
 
-    def train(self, input_matrix, target_matrix, logging_frequency=1000,
-              weight_backup_frequency=100, layers_filename="",
+    def train(self, input_matrix, target_matrix, max_iterations=1000,
+              logging_frequency=1000, weight_backup_frequency=100,
+              layers_filename="",
               training_costs=None):
         """
         Train the neural network contructed
@@ -113,6 +114,7 @@ class NeuralNet():
         input_matrix: a (n * N) matrix
         target_matrix: a (m * N) matrix
 
+        max_iterations: the maximum number of iterations
         logging_frequency: the frequency of logging the training cost
         weight_backup_frequency: the frequency of storing the weights to a file
         layers_filename: the file to use to store the layers 
@@ -148,9 +150,6 @@ class NeuralNet():
             if(number_of_iterations % logging_frequency == 0):
                 logging.info("Cost: {}".format(loss))
 
-            if(loss < self.error_threshold):
-                break
-
             # Update weights using backpropagation
             self.backpropagation(delta)
 
@@ -158,6 +157,10 @@ class NeuralNet():
             if(store_layers and
                     number_of_iterations % weight_backup_frequency == 0):
                 self.dump_layer_weights(layers_filename)
+
+            if(loss < self.error_threshold or
+                    number_of_iterations == max_iterations):
+                break
 
             number_of_iterations += 1
 

@@ -17,10 +17,8 @@ class LayerBase():
         self.input_units = input_units
         self.output_units = output_units
 
-        # Randomly initialize weights in the range [-0.5, 0.5]
-        # Add bias unit to each layer
-        self.weights = -0.5 + \
-            np.random.rand(self.output_units, self.input_units+1)
+        # Invoke the weight initializer
+        self.initialize_weights(input_units, output_units)
 
         self.activation_function = None
         self.activation_function_derivative = None
@@ -29,6 +27,16 @@ class LayerBase():
         self.input_values = None
         # Store the activation value calculated during the forward pass
         self.activation_values = None
+
+    def initialize_weights(self, input_units, output_units):
+        """
+        A default implementation of weight initializer
+        """
+
+        # Randomly initialize weights in the range [-0.5, 0.5]
+        # Add bias unit to each layer
+        self.weights = -0.5 + \
+            np.random.rand(self.output_units, self.input_units+1)
 
     def forward_pass(self, input_matrix):
         """

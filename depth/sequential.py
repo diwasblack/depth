@@ -108,6 +108,18 @@ class NeuralNet():
 
     def train(self, input_matrix, target_matrix, logging_frequency=1000,
               weight_backup_frequency=100, weights_filename=""):
+        """
+        Train the neural network contructed
+
+        Inputs:
+        input_matrix: a (n * N) matrix
+        target_matrix: a (m * N) matrix
+
+        logging_frequency: the frequency of logging the training cost
+        weight_backup_frequency: the frequency of storing the weights to a file
+        weights_filename: the file to use to store the layers
+
+        """
         number_of_iterations = 1
 
         while(True):

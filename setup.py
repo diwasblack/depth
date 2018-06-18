@@ -8,4 +8,5 @@ setup(
     packages=find_packages(),
     license='MIT',
     install_requires=['numpy>=1.14.5'],
+    test_suite="tests"
 )

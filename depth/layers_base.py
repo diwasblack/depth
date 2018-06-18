@@ -108,3 +108,16 @@ class XavierWeightInitializer():
     def initialize_weights(self, input_units, output_units):
         self.weights = np.random.rand(output_units, input_units+1) * \
                 math.sqrt(1.0 / input_units)
+
+
+class HeWeightInitializer():
+    """
+    An implementation of He weight initialization
+
+    See:
+    https://www.cv-foundation.org/openaccess/content_iccv_2015/papers/He_Delving_Deep_into_ICCV_2015_paper.pdf
+    """
+
+    def initialize_weights(self, input_units, output_units):
+        self.weights = np.random.rand(output_units, input_units+1) * \
+                math.sqrt(2.0 / input_units)

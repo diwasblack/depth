@@ -1,5 +1,6 @@
 from .layers_base import (
-    LayerBase, NonLinearBackprop, LinearBackprop, XavierWeightInitializer)
+    LayerBase, NonLinearBackprop, LinearBackprop, XavierWeightInitializer,
+    HeWeightInitializer)
 from .activations import (
     hyperbolic_tangent, hyperbolic_tangent_derivative,
     relu, relu_derivative,
@@ -15,7 +16,7 @@ class TanhLayer(NonLinearBackprop, LayerBase, XavierWeightInitializer):
         self.activation_function_derivative = hyperbolic_tangent_derivative
 
 
-class ReluLayer(NonLinearBackprop, LayerBase):
+class ReluLayer(NonLinearBackprop, LayerBase, HeWeightInitializer):
     def __init__(self, *args):
         super().__init__(*args)
         # Assign relu function to be the activation function

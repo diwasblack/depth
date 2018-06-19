@@ -136,7 +136,7 @@ class NeuralNet():
         return accuracy
 
     def train(self, input_matrix, target_matrix, max_iterations=1000,
-              logging_frequency=1000, weight_backup_frequency=100,
+              logging_frequency=100, update_frequency=100,
               layers_filename="", training_logger=None
               ):
         """
@@ -148,7 +148,8 @@ class NeuralNet():
 
         max_iterations: the maximum number of iterations
         logging_frequency: the frequency of logging the training cost
-        weight_backup_frequency: the frequency of storing the weights to a file
+        update_frequency: the frequency of storing the weights to a file and decaying the learning
+            rate
         layers_filename: the file to use to store the layers
 
         training_logger: the logger object to use for report training information
@@ -184,10 +185,13 @@ class NeuralNet():
             # Update weights using backpropagation
             self.backpropagation(delta)
 
-            # NOTE dump layers only after backpropagation update
-            if(store_layers and
-                    number_of_iterations % weight_backup_frequency == 0):
-                self.dump_layer_weights(layers_filename)
+            if(number_of_iterations % update_frequency == 0):
+                if(store_layers):
+                    # NOTE dump layers only after backpropagation update
+                    self.dump_layer_weights(layers_filename)
+
+                # Decay the learning rate if needed
+                self.optimizer.decay_learning_rate()
 
             if(loss < self.error_threshold or
                     number_of_iterations == max_iterations):

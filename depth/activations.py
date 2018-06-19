@@ -46,3 +46,28 @@ def softmax_function(x):
 
     e_x = np.exp(x - np.max(x, axis=0))
     return e_x / e_x.sum(axis=0)
+
+
+def leaky_relu(alpha=0.3):
+    """
+    Implementation of leaky relu activation function
+    """
+
+    def leaky_relu(x):
+        return np.maximum(alpha * x, x)
+    return leaky_relu
+
+
+def leaky_relu_derivative(alpha=0.3):
+    """
+    Derivative of leaky relu activation function
+    """
+
+    def leaky_relu_derivative(x):
+        x_derivative = np.copy(x)
+        x_derivative[x <= 0] = alpha
+        x_derivative[x > 0] = 1
+
+        return x_derivative
+
+    return leaky_relu_derivative

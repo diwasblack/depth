@@ -5,7 +5,8 @@ import gzip
 import numpy as np
 
 from .layers import (
-    TanhLayer, ReluLayer, LinearLayer, SigmoidLayer, SoftmaxLayer
+    TanhLayer, ReluLayer, LeakyReluLayer, LinearLayer, SigmoidLayer,
+    SoftmaxLayer
 )
 from .loss_functions import mean_squared_error, cross_entropy
 from .helpers import vector_to_label
@@ -36,6 +37,9 @@ class NeuralNet():
 
         elif(activation_function == "relu"):
             layer = ReluLayer(previous_units, units)
+
+        elif(activation_function == "leakyrelu"):
+            layer = LeakyReluLayer(previous_units, units)
 
         elif(activation_function == "sigmoid"):
             layer = SigmoidLayer(previous_units, units)

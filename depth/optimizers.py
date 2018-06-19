@@ -16,3 +16,11 @@ class SGD():
         """
         parameter_updates = self.lr * parameters
         return parameter_updates
+
+    def decay_learning_rate(self):
+        """
+        Decay learning rate by the factor provided
+        """
+
+        if(self.decay):
+            self.lr = self.decay * self.lr

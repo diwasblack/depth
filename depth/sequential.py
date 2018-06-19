@@ -28,29 +28,33 @@ class NeuralNet():
 
         self.optimizer = None
 
-    def add_layer(self, activation_function="tanh", units=64, input_dimension=None):
+    def add_layer(self, activation_function="tanh", units=64,
+                  input_dimension=None, **kwargs):
+
         if(not(self.layers)):
             previous_units = input_dimension
         else:
             previous_units = self.layers[-1].output_units
 
         if(activation_function == "tanh"):
-            layer = TanhLayer(previous_units, units)
+            layer = TanhLayer(previous_units, units, **kwargs)
 
         elif(activation_function == "relu"):
-            layer = ReluLayer(previous_units, units)
+            layer = ReluLayer(previous_units, units, **kwargs)
 
         elif(activation_function == "leakyrelu"):
-            layer = LeakyReluLayer(previous_units, units)
+            layer = LeakyReluLayer(previous_units, units, **kwargs)
 
         elif(activation_function == "sigmoid"):
-            layer = SigmoidLayer(previous_units, units)
+            layer = SigmoidLayer(previous_units, units, **kwargs)
 
         elif(activation_function == "linear"):
-            layer = LinearLayer(previous_units, units)
+            layer = LinearLayer(previous_units, units, **kwargs)
 
         elif(activation_function == "softmax"):
-            layer = SoftmaxLayer(previous_units, units)
+            layer = SoftmaxLayer(previous_units, units, **kwargs)
+        else:
+            raise Exception("Unknown layer name received")
 
         # Add layer to the list
         self.layers.append(layer)

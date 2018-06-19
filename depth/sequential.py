@@ -11,6 +11,7 @@ from .layers import (
 from .loss_functions import mean_squared_error, cross_entropy
 from .helpers import vector_to_label
 from .metrics import categorical_accuracy
+from .optimizers import SGD
 
 
 class NeuralNet():
@@ -21,10 +22,11 @@ class NeuralNet():
     def __init__(self):
         # List to hold the layers
         self.layers = []
-        self.learning_rate = None
 
         self.loss_function = None
         self.loss_function_derivative = None
+
+        self.optimizer = None
 
     def add_layer(self, activation_function="tanh", units=64, input_dimension=None):
         if(not(self.layers)):
@@ -53,10 +55,8 @@ class NeuralNet():
         # Add layer to the list
         self.layers.append(layer)
 
-    def compile(self, loss="mean_squared_error", learning_rate=0.001,
-                error_threshold=0.001):
+    def compile(self, loss="mean_squared_error", error_threshold=0.001, optimizer=None):
         self.output_dimension = self.layers[-1].output_units
-        self.learning_rate = learning_rate
 
         self.error_threshold = error_threshold
 
@@ -69,6 +69,12 @@ class NeuralNet():
         if(loss == "cross_entropy"):
             self.loss_function = cross_entropy
             self.loss_function_derivative = lambda x, y: x - y
+
+        # Assign an optimizer to use for updating parameters
+        if(not(optimizer)):
+            self.optimizer = SGD()
+        else:
+            self.optimizer = optimizer
 
     def forward_pass(self, input_matrix):
         output = np.copy(input_matrix)
@@ -83,7 +89,7 @@ class NeuralNet():
         """
         for layer in reversed(self.layers):
             # Propagate delta through layers
-            delta = layer.backprop(delta, self.learning_rate)
+            delta = layer.backprop(delta, self.optimizer)
 
     def dump_layer_weights(self, layers_filename):
         """

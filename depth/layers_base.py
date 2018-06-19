@@ -51,17 +51,18 @@ class LayerBase():
 
         return self.activation_values
 
-    def update_weights(self, eta, delta):
+    def update_weights(self, delta, optimizer):
         """
         Update the weight of the layer using the delta provided
         """
 
         # Calculate weight update
-        weight_update = eta * np.dot(delta, self.input_values.T)
+        weight_update = optimizer.get_updates(np.dot(
+            delta, self.input_values.T))
 
         self.weights = self.weights - weight_update
 
-    def backprop(self, delta, eta):
+    def backprop(self, delta, optimizer):
 
         if(self.weights.shape[0] != delta.shape[0]):
             # Remove the delta for the bias
@@ -73,7 +74,7 @@ class LayerBase():
         new_delta = np.dot(self.weights.T, dloss_dz)
 
         # Update the weight of the layer
-        self.update_weights(eta, delta)
+        self.update_weights(delta, optimizer)
 
         # Clean up memory of input and activation values
         self.input_values = None

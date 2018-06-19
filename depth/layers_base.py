@@ -51,10 +51,13 @@ class LayerBase():
 
         return self.activation_values
 
-    def update_weights(self, weight_update):
+    def update_weights(self, eta, delta):
         """
-        Update the weight of the layer
+        Update the weight of the layer using the delta provided
         """
+
+        # Calculate weight update
+        weight_update = eta * np.dot(delta, self.input_values.T)
 
         self.weights = self.weights - weight_update
 
@@ -66,14 +69,11 @@ class LayerBase():
 
         dloss_dz = self.calcuate_dloss_dz(delta)
 
-        # Calculate the delta for the next layer
-        # Must be done before weight update
+        # Calculate the delta for the next layer before weight update
         new_delta = np.dot(self.weights.T, dloss_dz)
 
-        # Calculate weight update
-        weight_update = eta * np.dot(delta, self.input_values.T)
-
-        self.update_weights(weight_update)
+        # Update the weight of the layer
+        self.update_weights(eta, delta)
 
         # Clean up memory of input and activation values
         self.input_values = None

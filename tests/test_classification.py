@@ -28,10 +28,8 @@ class TestReluLayer(TestClassification):
     def test_model_training(self):
         # Create nn object
         nn_object = NeuralNet()
-        nn_object.add_layer(units=32, activation_function="relu",
+        nn_object.add_layer(units=self.output_data_dimension, activation_function="relu",
                             input_dimension=self.input_data_dimension)
-        nn_object.add_layer(units=self.output_data_dimension,
-                            activation_function="softmax")
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
@@ -42,11 +40,9 @@ class TestLeakyReluLayer(TestClassification):
     def test_model_training(self):
         # Create nn object
         nn_object = NeuralNet()
-        nn_object.add_layer(units=32, activation_function="leakyrelu",
+        nn_object.add_layer(units=self.output_data_dimension, activation_function="leakyrelu",
                             input_dimension=self.input_data_dimension,
                             alpha=0.3)
-        nn_object.add_layer(units=self.output_data_dimension,
-                            activation_function="softmax")
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
@@ -57,10 +53,8 @@ class TestTanhLayer(TestClassification):
     def test_model_training(self):
         # Create nn object
         nn_object = NeuralNet()
-        nn_object.add_layer(units=32, activation_function="tanh",
+        nn_object.add_layer(units=self.output_data_dimension, activation_function="tanh",
                             input_dimension=self.input_data_dimension)
-        nn_object.add_layer(units=self.output_data_dimension,
-                            activation_function="softmax")
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
@@ -71,10 +65,8 @@ class TestSigmoidLayer(TestClassification):
     def test_model_training(self):
         # Create nn object
         nn_object = NeuralNet()
-        nn_object.add_layer(units=32, activation_function="sigmoid",
+        nn_object.add_layer(units=self.output_data_dimension, activation_function="sigmoid",
                             input_dimension=self.input_data_dimension)
-        nn_object.add_layer(units=self.output_data_dimension,
-                            activation_function="softmax")
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network

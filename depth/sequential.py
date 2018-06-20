@@ -5,13 +5,12 @@ import gzip
 import numpy as np
 
 from .layers import (
-    TanhLayer, ReluLayer, LeakyReluLayer, LinearLayer, SigmoidLayer,
-    SoftmaxLayer
-)
+    TanhLayer, ReluLayer, LeakyReluLayer, LinearLayer, SigmoidLayer)
 from .loss_functions import mean_squared_error, cross_entropy
 from .helpers import vector_to_label
 from .metrics import categorical_accuracy
 from .optimizers import SGD
+from .activations import softmax_function
 
 
 class NeuralNet():
@@ -25,6 +24,9 @@ class NeuralNet():
 
         self.loss_function = None
         self.loss_function_derivative = None
+
+        # Function to use to transform the final output
+        self.output_function = None
 
         self.optimizer = None
 
@@ -51,8 +53,6 @@ class NeuralNet():
         elif(activation_function == "linear"):
             layer = LinearLayer(previous_units, units, **kwargs)
 
-        elif(activation_function == "softmax"):
-            layer = SoftmaxLayer(previous_units, units, **kwargs)
         else:
             raise Exception("Unknown layer name received")
 
@@ -70,9 +70,13 @@ class NeuralNet():
             self.loss_function = mean_squared_error
             self.loss_function_derivative = lambda x, y: x - y
 
+            self.output_function = lambda x: x
+
         if(loss == "cross_entropy"):
             self.loss_function = cross_entropy
             self.loss_function_derivative = lambda x, y: x - y
+
+            self.output_function = softmax_function
 
         # Assign an optimizer to use for updating parameters
         if(not(optimizer)):
@@ -85,6 +89,8 @@ class NeuralNet():
         for layer in self.layers:
             output = layer.forward_pass(output)
 
+        # Transform the final output
+        output = self.output_function(output)
         return output
 
     def backpropagation(self, delta):

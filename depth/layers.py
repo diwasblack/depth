@@ -47,9 +47,3 @@ class LinearLayer(LinearBackprop, LayerBase):
         super().__init__(*args)
         # Return the input as without modification
         self.activation_function = lambda x: x
-
-
-class SoftmaxLayer(LinearBackprop, LayerBase):
-    def __init__(self, *args):
-        super().__init__(*args)
-        self.activation_function = softmax_function

@@ -54,34 +54,33 @@ class LayerBase():
 
         return self.activation_values
 
-    def update_weights(self, delta, optimizer):
-        """
-        Update the weight of the layer using the delta provided
-        """
-
-        gradient = np.dot(delta, self.input_values.T)
-
-        # Calculate weight update
-        weight_update = optimizer.get_updates(gradient, self.previous_updates)
-
-        self.weights = self.weights - weight_update
-
-        # Store weight update
-        self.previous_updates = np.copy(weight_update)
-
     def backprop(self, delta, optimizer):
+        """
+        Propagate the delta through the layer to calculate delta for next
+        layer and update the weight of current layer as well.
+        """
 
         if(self.weights.shape[0] != delta.shape[0]):
             # Remove the delta for the bias
             delta = delta[1:, :]
 
+        # Calculate gradient for activation function
         dloss_dz = self.calcuate_dloss_dz(delta)
 
         # Calculate the delta for the next layer before weight update
         new_delta = np.dot(self.weights.T, dloss_dz)
 
-        # Update the weight of the layer
-        self.update_weights(delta, optimizer)
+        # Calculate the gradient for current layer
+        gradient = np.dot(delta, self.input_values.T)
+
+        # Calculate the weight update for the layer
+        weight_update = optimizer.get_updates(gradient, self.previous_updates)
+
+        # Update weight of current layer
+        self.weights = self.weights - weight_update
+
+        # Store weight update
+        self.previous_updates = np.copy(weight_update)
 
         # Clean up memory of input and activation values
         self.input_values = None

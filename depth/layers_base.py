@@ -12,6 +12,9 @@ class LayerBase():
         self.input_units = input_units
         self.output_units = output_units
 
+        # Store the result of previous gradient update
+        self.previous_updates = None
+
         # Invoke the weight initializer
         self.initialize_weights(input_units, output_units)
 
@@ -56,11 +59,15 @@ class LayerBase():
         Update the weight of the layer using the delta provided
         """
 
+        gradient = np.dot(delta, self.input_values.T)
+
         # Calculate weight update
-        weight_update = optimizer.get_updates(np.dot(
-            delta, self.input_values.T))
+        weight_update = optimizer.get_updates(gradient, self.previous_updates)
 
         self.weights = self.weights - weight_update
+
+        # Store weight update
+        self.previous_updates = np.copy(weight_update)
 
     def backprop(self, delta, optimizer):
 

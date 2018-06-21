@@ -64,6 +64,9 @@ class LayerBase():
             # Remove the delta for the bias
             delta = delta[1:, :]
 
+        # Use number of samples as normalization_factor for gradient
+        normalization_factor = self.input_values.shape[1]
+
         # Calculate gradient for activation function
         dloss_dz = self.calcuate_dloss_dz(delta)
 
@@ -71,7 +74,7 @@ class LayerBase():
         new_delta = np.dot(self.weights.T, dloss_dz)
 
         # Calculate the gradient for current layer
-        gradient = np.dot(delta, self.input_values.T)
+        gradient = np.dot(delta, self.input_values.T) / normalization_factor
 
         # Calculate the weight update for the layer
         weight_update = optimizer.get_updates(gradient, self.previous_updates)

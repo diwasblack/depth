@@ -108,7 +108,7 @@ class NeuralNet():
         logging.info("Starting a backup of layers to a file")
 
         with gzip.open(layers_filename, "wb") as file:
-            pickle.dump(self.layers, file)
+            pickle.dump((self.layers, self.output_function), file)
 
         logging.info("Layer backup to the file completed")
 
@@ -120,7 +120,7 @@ class NeuralNet():
         logging.info("Trying to load layers from the file")
 
         with gzip.open(layers_filename, "rb") as file:
-            self.layers = pickle.load(file)
+            self.layers, self.output_function = pickle.load(file)
 
         logging.info("Succefully loaded layers from file")
 

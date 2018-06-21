@@ -71,10 +71,10 @@ class LayerBase():
         dloss_dz = self.calcuate_dloss_dz(delta)
 
         # Calculate the delta for the next layer before weight update
-        new_delta = np.dot(self.weights.T, dloss_dz)
+        delta = np.dot(self.weights.T, dloss_dz)
 
         # Calculate the gradient for current layer
-        gradient = np.dot(delta, self.input_values.T) / normalization_factor
+        gradient = np.dot(dloss_dz, self.input_values.T) / normalization_factor
 
         # Calculate the weight update for the layer
         weight_update = optimizer.get_updates(gradient, self.previous_updates)
@@ -89,7 +89,7 @@ class LayerBase():
         self.input_values = None
         self.activation_values = None
 
-        return new_delta
+        return delta
 
 
 class NonLinearBackprop():

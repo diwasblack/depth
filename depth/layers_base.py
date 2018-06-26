@@ -8,7 +8,7 @@ class LayerBase():
     Base class for the neural network layers
     """
 
-    def __init__(self, input_units, output_units, use_softmax=False):
+    def __init__(self, input_units, output_units):
         self.input_units = input_units
         self.output_units = output_units
 

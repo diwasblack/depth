@@ -8,7 +8,7 @@ class LayerBase():
     Base class for the neural network layers
     """
 
-    def __init__(self, input_units, output_units):
+    def __init__(self, input_units, output_units, regularizer=None):
         self.input_units = input_units
         self.output_units = output_units
 
@@ -25,6 +25,9 @@ class LayerBase():
         self.input_values = None
         # Store the activation value calculated during the forward pass
         self.activation_values = None
+
+        # Store the regularizer to use with the layer
+        self.regularizer = regularizer
 
     def initialize_weights(self, input_units, output_units):
         """
@@ -76,6 +79,10 @@ class LayerBase():
         # Calculate the gradient for current layer
         gradient = np.dot(dloss_dz, self.input_values.T) / normalization_factor
 
+        # Add gradient from regularizer
+        if(self.regularizer):
+            gradient += self.regularizer.get_derivative_value(self.weights)
+
         # Calculate the weight update for the layer
         weight_update = optimizer.get_updates(gradient, self.previous_updates)
 
@@ -90,6 +97,13 @@ class LayerBase():
         self.activation_values = None
 
         return delta
+
+    def get_regularized_cost(self):
+        """
+        Get the cost of the layer using the regularizer provided
+        """
+
+        return self.regularizer.get_cost(self.weights)
 
 
 class NonLinearBackprop():

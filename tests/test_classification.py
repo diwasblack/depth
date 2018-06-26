@@ -4,6 +4,7 @@ import numpy as np
 
 from depth.helpers import one_hot_encoding
 from depth.sequential import NeuralNet
+from depth.regularizers import L2Regularizer
 
 
 class TestClassification(unittest.TestCase):
@@ -67,6 +68,23 @@ class TestSigmoidLayer(TestClassification):
         nn_object = NeuralNet()
         nn_object.add_layer(units=self.output_data_dimension, activation_function="sigmoid",
                             input_dimension=self.input_data_dimension)
+        nn_object.compile(loss="cross_entropy")
+
+        # Train the neural network
+        nn_object.train(self.input_data, self.target_data, max_iterations=1)
+
+
+class TestRegularizedClassification(TestClassification):
+    def test_model_training(self):
+        # Create a regularizer
+        regularizer = L2Regularizer(1.0)
+
+        # Create nn object
+        nn_object = NeuralNet()
+        nn_object.add_layer(
+            units=self.output_data_dimension, activation_function="tanh",
+            input_dimension=self.input_data_dimension, regularizer=regularizer
+        )
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network

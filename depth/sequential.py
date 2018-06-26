@@ -141,6 +141,18 @@ class NeuralNet():
 
         return accuracy
 
+    def get_regularization_cost(self):
+        """
+        Iterate through the layers to obtain the cost of the model
+        """
+
+        model_cost = 0
+
+        for layer in self.layers:
+            model_cost += layer.get_regularized_cost()
+
+        return model_cost
+
     def train(self, input_matrix, target_matrix, max_iterations=1000,
               logging_frequency=100, update_frequency=100,
               layers_filename="", training_logger=None
@@ -177,6 +189,9 @@ class NeuralNet():
                 predicted_output, target_matrix)
 
             loss = self.loss_function(predicted_output, target_matrix)
+
+            # Add the regularied loss
+            loss += self.get_regularization_cost()
 
             if(training_logger):
                 accuracy = self.prediction_accuracy(

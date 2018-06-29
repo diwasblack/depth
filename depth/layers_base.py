@@ -103,7 +103,10 @@ class LayerBase():
         Get the cost of the layer using the regularizer provided
         """
 
-        return self.regularizer.get_cost(self.weights)
+        if(self.regularizer):
+            return self.regularizer.get_cost(self.weights)
+        else:
+            return 0
 
 
 class NonLinearBackprop():

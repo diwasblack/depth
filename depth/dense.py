@@ -81,7 +81,15 @@ class DenseLayerBase():
 
         # Add gradient from regularizer
         if(self.regularizer):
-            gradient += self.regularizer.get_derivative_value(self.weights)
+            regularizer_gradient = self.regularizer.get_derivative_value(
+                self.weights[:, 1:])
+
+            zeroes = np.zeros((self.weights.shape[0], 1))
+
+            # Do not regularizer the bias weights
+            regularizer_gradient = np.hstack((zeroes, regularizer_gradient))
+
+            gradient += regularizer_gradient
 
         # Calculate the weight update for the layer
         weight_update = optimizer.get_updates(gradient, self.previous_updates)

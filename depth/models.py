@@ -130,9 +130,8 @@ class Sequential():
         return model_cost
 
     def train(self, input_matrix, target_matrix, max_iterations=1000,
-              logging_frequency=100, update_frequency=100,
-              layers_filename="", training_logger=None
-              ):
+              logging_frequency=100, update_frequency=100, decay_frequency=500,
+              layers_filename="", training_logger=None):
         """
         Train the neural network contructed
 
@@ -142,6 +141,7 @@ class Sequential():
 
         max_iterations: the maximum number of iterations
         logging_frequency: the frequency of logging the training cost
+        decay_frequency: the frequency to decay learning rate at
         update_frequency: the frequency of storing the weights to a file and decaying the learning
             rate
         layers_filename: the file to use to store the layers
@@ -187,6 +187,8 @@ class Sequential():
                     # NOTE dump layers only after backpropagation update
                     self.dump_layer_weights(layers_filename)
 
+            # Decay the learning rate if needed
+            if(number_of_iterations % decay_frequency == 0):
                 # Decay the learning rate if needed
                 self.optimizer.decay_learning_rate()
 

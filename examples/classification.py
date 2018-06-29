@@ -22,7 +22,8 @@ def main():
         units=32, activation_function="tanh",
         input_dimension=input_data_dimension))
     nn_object.add_layer(DenseLayer(units=64, activation_function="tanh"))
-    nn_object.add_layer(DenseLayer(units=output_data_dimension))
+    nn_object.add_layer(DenseLayer(
+        units=output_data_dimension, activation_function="softmax"))
     nn_object.compile(loss="cross_entropy", error_threshold=0.001)
 
     input_data = -0.5 + np.random.rand(input_data_dimension, number_of_samples)

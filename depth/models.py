@@ -8,7 +8,6 @@ from .loss_functions import mean_squared_error, cross_entropy
 from .helpers import vector_to_label
 from .metrics import categorical_accuracy
 from .optimizers import SGD
-from .activations import softmax_function
 
 
 class Sequential():
@@ -48,16 +47,14 @@ class Sequential():
         self.number_of_layers = len(self.layers)
 
         if(loss == "mean_squared_error"):
+            # NOTE for now assumes that the final layer to be linear
             self.loss_function = mean_squared_error
             self.loss_function_derivative = lambda x, y: x - y
 
-            self.output_function = lambda x: x
-
         if(loss == "cross_entropy"):
+            # NOTE for now assumes that the final layer to be softmax
             self.loss_function = cross_entropy
             self.loss_function_derivative = lambda x, y: x - y
-
-            self.output_function = softmax_function
 
         # Assign an optimizer to use for updating parameters
         if(not(optimizer)):
@@ -70,8 +67,6 @@ class Sequential():
         for layer in self.layers:
             output = layer.forward_pass(output)
 
-        # Transform the final output
-        output = self.output_function(output)
         return output
 
     def backpropagation(self, delta):
@@ -89,7 +84,7 @@ class Sequential():
         logging.info("Starting a backup of layers to a file")
 
         with gzip.open(layers_filename, "wb") as file:
-            pickle.dump((self.layers, self.output_function), file)
+            pickle.dump(self.layers, file)
 
         logging.info("Layer backup to the file completed")
 
@@ -101,7 +96,7 @@ class Sequential():
         logging.info("Trying to load layers from the file")
 
         with gzip.open(layers_filename, "rb") as file:
-            self.layers, self.output_function = pickle.load(file)
+            self.layers = pickle.load(file)
 
         logging.info("Succefully loaded layers from file")
 

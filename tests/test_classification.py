@@ -31,8 +31,10 @@ class TestReluLayer(TestClassification):
         # Create nn object
         nn_object = Sequential()
         nn_object.add_layer(DenseLayer(
-            units=self.output_data_dimension, activation_function="relu",
+            units=16, activation_function="relu",
             input_dimension=self.input_data_dimension))
+        nn_object.add_layer(DenseLayer(
+            units=self.output_data_dimension, activation_function="softmax"))
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
@@ -44,9 +46,11 @@ class TestLeakyReluLayer(TestClassification):
         # Create nn object
         nn_object = Sequential()
         nn_object.add_layer(DenseLayer(
-            units=self.output_data_dimension, activation_function="leakyrelu",
+            units=16, activation_function="leakyrelu",
             input_dimension=self.input_data_dimension,
             alpha=0.3))
+        nn_object.add_layer(DenseLayer(
+            units=self.output_data_dimension, activation_function="softmax"))
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
@@ -58,8 +62,10 @@ class TestTanhLayer(TestClassification):
         # Create nn object
         nn_object = Sequential()
         nn_object.add_layer(DenseLayer(
-            units=self.output_data_dimension, activation_function="tanh",
+            units=16, activation_function="tanh",
             input_dimension=self.input_data_dimension))
+        nn_object.add_layer(DenseLayer(
+            units=self.output_data_dimension, activation_function="softmax"))
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
@@ -71,8 +77,10 @@ class TestSigmoidLayer(TestClassification):
         # Create nn object
         nn_object = Sequential()
         nn_object.add_layer(DenseLayer(
-            units=self.output_data_dimension, activation_function="sigmoid",
+            units=16, activation_function="sigmoid",
             input_dimension=self.input_data_dimension))
+        nn_object.add_layer(DenseLayer(
+            units=self.output_data_dimension, activation_function="softmax"))
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
@@ -87,9 +95,11 @@ class TestRegularizedClassification(TestClassification):
         # Create nn object
         nn_object = Sequential()
         nn_object.add_layer(DenseLayer(
-            units=self.output_data_dimension, activation_function="tanh",
+            units=16, activation_function="tanh",
             input_dimension=self.input_data_dimension, regularizer=regularizer
         ))
+        nn_object.add_layer(DenseLayer(
+            units=self.output_data_dimension, activation_function="softmax"))
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network

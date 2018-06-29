@@ -27,8 +27,7 @@ nn_object.add_layer(DenseLayer(
     units=32, activation_function="tanh", input_dimension=10))
 nn_object.add_layer(DenseLayer(
     units=64, activation_function="tanh"))
-nn_object.add_layer(DenseLayer(
-    units=output_data_dimension, activation_function="softmax"))
+nn_object.add_layer(DenseLayer(units=10))
 nn_object.compile(loss="cross_entropy", error_threshold=0.001)
 ```
 

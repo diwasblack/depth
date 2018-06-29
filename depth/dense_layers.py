@@ -6,7 +6,8 @@ from .activations import (
     hyperbolic_tangent, hyperbolic_tangent_derivative,
     relu, relu_derivative,
     leaky_relu, leaky_relu_derivative,
-    sigmoid_function, sigmoid_function_derivative)
+    sigmoid_function, sigmoid_function_derivative,
+    softmax_function)
 
 
 class TanhLayer(NonLinearBackprop, DenseLayerBase, XavierWeightInitializer):
@@ -48,3 +49,13 @@ class LinearLayer(LinearBackprop, DenseLayerBase):
         super().__init__(*args, **kwargs)
         # Return the input as without modification
         self.activation_function = lambda x: x
+
+
+class SoftmaxLayer(LinearBackprop, DenseLayerBase):
+    """
+    An impementation of softmax layer that is to be used at output layer only
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.activation_function = softmax_function

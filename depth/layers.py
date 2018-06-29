@@ -1,5 +1,6 @@
 from .dense_layers import (
-    TanhLayer, ReluLayer, LeakyReluLayer, SigmoidLayer, LinearLayer)
+    TanhLayer, ReluLayer, LeakyReluLayer, SigmoidLayer, LinearLayer,
+    SoftmaxLayer)
 
 
 class DenseLayer():
@@ -33,6 +34,9 @@ class DenseLayer():
 
         elif(activation_function == "linear"):
             layer = LinearLayer(previous_units, units, **kwargs)
+
+        elif(activation_function == "softmax"):
+            layer = SoftmaxLayer(previous_units, units, **kwargs)
 
         else:
             raise Exception("Unknown layer name received")

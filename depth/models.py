@@ -4,8 +4,6 @@ import gzip
 
 import numpy as np
 
-from .layers import (
-    TanhLayer, ReluLayer, LeakyReluLayer, LinearLayer, SigmoidLayer)
 from .loss_functions import mean_squared_error, cross_entropy
 from .helpers import vector_to_label
 from .metrics import categorical_accuracy
@@ -30,36 +28,19 @@ class Sequential():
 
         self.optimizer = None
 
-    def add_layer(self, activation_function="tanh", units=64,
-                  input_dimension=None, **kwargs):
-
-        if(not(self.layers)):
-            previous_units = input_dimension
-        else:
+    def add_layer(self, layer):
+        if(self.layers):
             previous_units = self.layers[-1].output_units
-
-        if(activation_function == "tanh"):
-            layer = TanhLayer(previous_units, units, **kwargs)
-
-        elif(activation_function == "relu"):
-            layer = ReluLayer(previous_units, units, **kwargs)
-
-        elif(activation_function == "leakyrelu"):
-            layer = LeakyReluLayer(previous_units, units, **kwargs)
-
-        elif(activation_function == "sigmoid"):
-            layer = SigmoidLayer(previous_units, units, **kwargs)
-
-        elif(activation_function == "linear"):
-            layer = LinearLayer(previous_units, units, **kwargs)
-
         else:
-            raise Exception("Unknown layer name received")
+            previous_units = None
+
+        layer_obj = layer.get_layer_obj(previous_units=previous_units)
 
         # Add layer to the list
-        self.layers.append(layer)
+        self.layers.append(layer_obj)
 
-    def compile(self, loss="mean_squared_error", error_threshold=0.001, optimizer=None):
+    def compile(self, loss="mean_squared_error", error_threshold=0.001,
+                optimizer=None):
         self.output_dimension = self.layers[-1].output_units
 
         self.error_threshold = error_threshold

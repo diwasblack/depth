@@ -4,6 +4,7 @@ import numpy as np
 
 from depth.helpers import one_hot_encoding
 from depth.models import Sequential
+from depth.layers import DenseLayer
 from depth.regularizers import L2Regularizer
 
 
@@ -29,8 +30,9 @@ class TestReluLayer(TestClassification):
     def test_model_training(self):
         # Create nn object
         nn_object = Sequential()
-        nn_object.add_layer(units=self.output_data_dimension, activation_function="relu",
-                            input_dimension=self.input_data_dimension)
+        nn_object.add_layer(DenseLayer(
+            units=self.output_data_dimension, activation_function="relu",
+            input_dimension=self.input_data_dimension))
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
@@ -41,9 +43,10 @@ class TestLeakyReluLayer(TestClassification):
     def test_model_training(self):
         # Create nn object
         nn_object = Sequential()
-        nn_object.add_layer(units=self.output_data_dimension, activation_function="leakyrelu",
-                            input_dimension=self.input_data_dimension,
-                            alpha=0.3)
+        nn_object.add_layer(DenseLayer(
+            units=self.output_data_dimension, activation_function="leakyrelu",
+            input_dimension=self.input_data_dimension,
+            alpha=0.3))
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
@@ -54,8 +57,9 @@ class TestTanhLayer(TestClassification):
     def test_model_training(self):
         # Create nn object
         nn_object = Sequential()
-        nn_object.add_layer(units=self.output_data_dimension, activation_function="tanh",
-                            input_dimension=self.input_data_dimension)
+        nn_object.add_layer(DenseLayer(
+            units=self.output_data_dimension, activation_function="tanh",
+            input_dimension=self.input_data_dimension))
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
@@ -66,8 +70,9 @@ class TestSigmoidLayer(TestClassification):
     def test_model_training(self):
         # Create nn object
         nn_object = Sequential()
-        nn_object.add_layer(units=self.output_data_dimension, activation_function="sigmoid",
-                            input_dimension=self.input_data_dimension)
+        nn_object.add_layer(DenseLayer(
+            units=self.output_data_dimension, activation_function="sigmoid",
+            input_dimension=self.input_data_dimension))
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
@@ -81,10 +86,10 @@ class TestRegularizedClassification(TestClassification):
 
         # Create nn object
         nn_object = Sequential()
-        nn_object.add_layer(
+        nn_object.add_layer(DenseLayer(
             units=self.output_data_dimension, activation_function="tanh",
             input_dimension=self.input_data_dimension, regularizer=regularizer
-        )
+        ))
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network

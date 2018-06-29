@@ -3,6 +3,7 @@ import logging
 import numpy as np
 
 from depth.models import Sequential
+from depth.layers import DenseLayer
 from depth.helpers import one_hot_encoding, vector_to_label
 from depth.metrics import categorical_accuracy
 
@@ -17,10 +18,11 @@ def main():
     output_data_dimension = 3
 
     nn_object = Sequential()
-    nn_object.add_layer(units=32, activation_function="tanh",
-                        input_dimension=input_data_dimension)
-    nn_object.add_layer(units=64, activation_function="tanh")
-    nn_object.add_layer(units=output_data_dimension)
+    nn_object.add_layer(DenseLayer(
+        units=32, activation_function="tanh",
+        input_dimension=input_data_dimension))
+    nn_object.add_layer(DenseLayer(units=64, activation_function="tanh"))
+    nn_object.add_layer(DenseLayer(units=output_data_dimension))
     nn_object.compile(loss="cross_entropy", error_threshold=0.001)
 
     input_data = -0.5 + np.random.rand(input_data_dimension, number_of_samples)

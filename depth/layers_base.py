@@ -3,7 +3,7 @@ import math
 import numpy as np
 
 
-class LayerBase():
+class DenseLayerBase():
     """
     Base class for the neural network layers
     """

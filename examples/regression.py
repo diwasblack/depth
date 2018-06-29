@@ -3,6 +3,7 @@ import logging
 import numpy as np
 
 from depth.models import Sequential
+from depth.layers import DenseLayer
 from depth.loss_functions import mean_squared_error
 
 
@@ -16,11 +17,12 @@ def main():
     output_data_dimension = 3
 
     nn_object = Sequential()
-    nn_object.add_layer(units=32, activation_function="relu",
-                        input_dimension=input_data_dimension)
-    nn_object.add_layer(units=64)
-    nn_object.add_layer(units=output_data_dimension,
-                        activation_function="linear")
+    nn_object.add_layer(DenseLayer(
+        units=32, activation_function="relu",
+        input_dimension=input_data_dimension))
+    nn_object.add_layer(DenseLayer(units=64))
+    nn_object.add_layer(DenseLayer(units=output_data_dimension,
+                                   activation_function="linear"))
     nn_object.compile(loss="mean_squared_error", error_threshold=0.001)
 
     input_data = -0.5 + np.random.rand(input_data_dimension, number_of_samples)

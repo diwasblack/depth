@@ -13,7 +13,7 @@ from .optimizers import SGD
 from .activations import softmax_function
 
 
-class NeuralNet():
+class Sequential():
     """
     Implementation of sequential backpropagation neural network
     """

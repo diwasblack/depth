@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 
 from depth.helpers import one_hot_encoding
-from depth.sequential import NeuralNet
+from depth.models import Sequential
 from depth.regularizers import L2Regularizer
 
 
@@ -28,7 +28,7 @@ class TestClassification(unittest.TestCase):
 class TestReluLayer(TestClassification):
     def test_model_training(self):
         # Create nn object
-        nn_object = NeuralNet()
+        nn_object = Sequential()
         nn_object.add_layer(units=self.output_data_dimension, activation_function="relu",
                             input_dimension=self.input_data_dimension)
         nn_object.compile(loss="cross_entropy")
@@ -40,7 +40,7 @@ class TestReluLayer(TestClassification):
 class TestLeakyReluLayer(TestClassification):
     def test_model_training(self):
         # Create nn object
-        nn_object = NeuralNet()
+        nn_object = Sequential()
         nn_object.add_layer(units=self.output_data_dimension, activation_function="leakyrelu",
                             input_dimension=self.input_data_dimension,
                             alpha=0.3)
@@ -53,7 +53,7 @@ class TestLeakyReluLayer(TestClassification):
 class TestTanhLayer(TestClassification):
     def test_model_training(self):
         # Create nn object
-        nn_object = NeuralNet()
+        nn_object = Sequential()
         nn_object.add_layer(units=self.output_data_dimension, activation_function="tanh",
                             input_dimension=self.input_data_dimension)
         nn_object.compile(loss="cross_entropy")
@@ -65,7 +65,7 @@ class TestTanhLayer(TestClassification):
 class TestSigmoidLayer(TestClassification):
     def test_model_training(self):
         # Create nn object
-        nn_object = NeuralNet()
+        nn_object = Sequential()
         nn_object.add_layer(units=self.output_data_dimension, activation_function="sigmoid",
                             input_dimension=self.input_data_dimension)
         nn_object.compile(loss="cross_entropy")
@@ -80,7 +80,7 @@ class TestRegularizedClassification(TestClassification):
         regularizer = L2Regularizer(1.0)
 
         # Create nn object
-        nn_object = NeuralNet()
+        nn_object = Sequential()
         nn_object.add_layer(
             units=self.output_data_dimension, activation_function="tanh",
             input_dimension=self.input_data_dimension, regularizer=regularizer

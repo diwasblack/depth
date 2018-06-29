@@ -22,7 +22,7 @@ Examples
 A sequential network with 2 hidden layer and a softmax layers as final layer with cross entropy loss.
 
 ```python
-nn_object = NeuralNet()
+nn_object = Sequential()
 nn_object.add_layer(units=32, activation_function="tanh", input_dimension=10)
 nn_object.add_layer(units=64, activation_function="tanh")
 nn_object.add_layer(units=output_data_dimension, activation_function="softmax")

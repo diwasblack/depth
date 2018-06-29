@@ -2,7 +2,7 @@ import logging
 
 import numpy as np
 
-from depth.sequential import NeuralNet
+from depth.models import Sequential
 from depth.helpers import one_hot_encoding, vector_to_label
 from depth.metrics import categorical_accuracy
 
@@ -16,7 +16,7 @@ def main():
     input_data_dimension = 10
     output_data_dimension = 3
 
-    nn_object = NeuralNet()
+    nn_object = Sequential()
     nn_object.add_layer(units=32, activation_function="tanh",
                         input_dimension=input_data_dimension)
     nn_object.add_layer(units=64, activation_function="tanh")

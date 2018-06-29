@@ -5,7 +5,7 @@ import numpy as np
 
 class DenseLayerBase():
     """
-    Base class for the neural network layers
+    Base class for dense neural network layers
     """
 
     def __init__(self, input_units, output_units, regularizer=None):

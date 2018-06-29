@@ -39,23 +39,26 @@ class DenseLayerBase():
         self.weights = -0.5 + \
             np.random.rand(self.output_units, self.input_units+1)
 
-    def forward_pass(self, input_matrix):
+    def forward_pass(self, input_matrix, store_values=True):
         """
         Layer method to compute the activation values during forward pass
         """
 
         # Augment input data to include activation from bias unit
         bias_units = np.ones((1, input_matrix.shape[1]))
-
-        self.input_values = np.vstack((bias_units, input_matrix[:]))
+        input_values = np.vstack((bias_units, input_matrix[:]))
 
         # Compute the linear combination of weight and layer input
-        linear_combination = np.dot(self.weights, self.input_values)
+        linear_combination = np.dot(self.weights, input_values)
 
-        # Compute the activation value
-        self.activation_values = self.activation_function(linear_combination)
+        activation_values = self.activation_function(linear_combination)
 
-        return self.activation_values
+        # Store values for backpropagation
+        if(store_values):
+            self.input_values = input_values
+            self.activation_values = activation_values
+
+        return activation_values
 
     def backprop(self, delta, optimizer):
         """

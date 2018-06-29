@@ -62,10 +62,10 @@ class Sequential():
         else:
             self.optimizer = optimizer
 
-    def forward_pass(self, input_matrix):
+    def forward_pass(self, input_matrix, store_values=True):
         output = np.copy(input_matrix)
         for layer in self.layers:
-            output = layer.forward_pass(output)
+            output = layer.forward_pass(output, store_values=store_values)
 
         return output
 
@@ -203,4 +203,4 @@ class Sequential():
             number_of_iterations += 1
 
     def predict(self, input_matrix):
-        return self.forward_pass(input_matrix)
+        return self.forward_pass(input_matrix, store_values=False)

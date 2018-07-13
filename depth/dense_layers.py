@@ -51,7 +51,7 @@ class DenseLayer():
             raise Exception("Output units not provided")
 
         # Select an initializer for the weights
-        if(self.activation in ["relu", "leaky_relu"]):
+        if(self.activation in ["relu", "leakyrelu"]):
             self.weights = HeWeightInitializer(
                 self.input_units+1, self.output_units)
 

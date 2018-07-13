@@ -92,11 +92,6 @@ class DenseLayer():
             self.activation_function_derivative = leaky_relu_derivative(
                 alpha=alpha)
 
-        elif(self.activation == "leakyrelu"):
-            # Assign sigmoid function to be the activation function
-            self.activation_function = sigmoid_function
-            self.activation_function_derivative = sigmoid_function_derivative
-
         elif(self.activation == "linear"):
             # Return the input as without modification
             self.activation_function = lambda x: x

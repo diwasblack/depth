@@ -10,15 +10,15 @@ from .initializers import (
     HeWeightInitializer, XavierWeightInitializer)
 
 
-class DenseLayerBase():
+class DenseLayer():
     """
     Base class for dense neural network layers
     """
 
-    def __init__(self, input_units, output_units, regularizer=None,
+    def __init__(self, units=32, input_dimension=None, regularizer=None,
                  activation="tanh", **kwargs):
-        self.input_units = input_units
-        self.output_units = output_units
+        self.input_units = input_dimension
+        self.output_units = units
         self.activation = activation
         self.kwargs = kwargs
 
@@ -26,12 +26,6 @@ class DenseLayerBase():
 
         # Store the result of previous gradient update
         self.previous_updates = None
-
-        # Initialize the weights of the layer
-        self.initialize_weights()
-
-        # Construct the layer as per the configuration
-        self.prepare_model()
 
         # Store the input values during the forward_pass
         self.input_values = None
@@ -41,7 +35,37 @@ class DenseLayerBase():
         # Store the regularizer to use with the layer
         self.regularizer = regularizer
 
-    def prepare_model(self):
+    def initialize_layer_weights(self):
+        # Check if input and output units are properly initalized
+        if(not(self.input_units)):
+            raise Exception("Input units not provided")
+
+        if(not(self.output_units)):
+            raise Exception("Output units not provided")
+
+        # Select an initializer for the weights
+        if(self.activation in ["relu", "leaky_relu"]):
+            self.weights = HeWeightInitializer(
+                self.input_units+1, self.output_units)
+
+        elif(self.activation in ["tanh", "sigmoid"]):
+            self.weights = XavierWeightInitializer(
+                self.input_units+1, self.output_units)
+
+        else:
+            # Randomly initialize weights in the range [-0.5, 0.5]
+            # Add bias unit to each layer
+            self.weights = -0.5 + \
+                np.random.rand(self.output_units, self.input_units+1)
+
+    def construct_layer(self):
+        """
+        Helper function to construct the layer as per the initialized values
+        """
+        # Initialize the weights
+        self.initialize_layer_weights()
+
+        # Assign the activation function to use
         if(self.activation == "sigmoid"):
             self.activation_function = sigmoid_function
             self.activation_function_derivative = sigmoid_function_derivative
@@ -74,26 +98,6 @@ class DenseLayerBase():
         elif(self.activation == "softmax"):
             self.activation_function = softmax_function
             self.non_linear_activation = False
-
-    def initialize_weights(self):
-        """
-        Initialize the weights
-        """
-
-        # Select an initializer for the weights
-        if(self.activation in ["relu", "leaky_relu"]):
-            self.weights = HeWeightInitializer(
-                self.input_units+1, self.output_units)
-
-        elif(self.activation in ["tanh", "sigmoid"]):
-            self.weights = XavierWeightInitializer(
-                self.input_units+1, self.output_units)
-
-        else:
-            # Randomly initialize weights in the range [-0.5, 0.5]
-            # Add bias unit to each layer
-            self.weights = -0.5 + \
-                np.random.rand(self.output_units, self.input_units+1)
 
     def forward_pass(self, input_matrix, store_values=True):
         """
@@ -185,28 +189,3 @@ class DenseLayerBase():
             return self.regularizer.get_cost(self.weights)
         else:
             return 0
-
-
-class DenseLayer():
-    """
-    An abstration of Dense layer model
-    """
-
-    def __init__(self, activation_function="tanh", units=64,
-                 input_dimension=None, **kwargs):
-        self.activation_function = activation_function
-        self.units = units
-        self.input_dimension = input_dimension
-
-        self.kwargs = kwargs
-
-    def get_layer_obj(self, previous_units=None):
-        activation_function = self.activation_function
-        units = self.units
-        if(not(previous_units)):
-            previous_units = self.input_dimension
-
-        layer = DenseLayerBase(previous_units, units,
-                               activation=activation_function, **self.kwargs)
-
-        return layer

@@ -30,13 +30,12 @@ class Sequential():
     def add_layer(self, layer):
         if(self.layers):
             previous_units = self.layers[-1].output_units
-        else:
-            previous_units = None
+            layer.input_units = previous_units
 
-        layer_obj = layer.get_layer_obj(previous_units=previous_units)
+        layer.construct_layer()
 
         # Add layer to the list
-        self.layers.append(layer_obj)
+        self.layers.append(layer)
 
     def compile(self, loss="mean_squared_error", error_threshold=0.001,
                 optimizer=None):

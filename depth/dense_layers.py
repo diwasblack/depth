@@ -35,6 +35,13 @@ class DenseLayer():
         # Store the regularizer to use with the layer
         self.regularizer = regularizer
 
+    def get_output_dimension(self):
+        """
+        Return the dimension of output from this layer
+        """
+
+        return self.output_units
+
     def initialize_layer_weights(self):
         # Check if input and output units are properly initalized
         if(not(self.input_units)):

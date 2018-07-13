@@ -29,7 +29,7 @@ class Sequential():
 
     def add_layer(self, layer):
         if(self.layers):
-            previous_units = self.layers[-1].output_units
+            previous_units = self.layers[-1].get_output_dimension()
             layer.input_units = previous_units
 
         layer.construct_layer()

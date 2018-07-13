@@ -11,7 +11,7 @@ def HeWeightInitializer(input_units, output_units):
     https://www.cv-foundation.org/openaccess/content_iccv_2015/papers/He_Delving_Deep_into_ICCV_2015_paper.pdf
     """
 
-    return np.random.rand(output_units, input_units) * \
+    return np.random.randn(output_units, input_units) * \
         math.sqrt(2.0 / input_units)
 
 
@@ -22,5 +22,5 @@ def XavierWeightInitializer(input_units, output_units):
     See:
     http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf
     """
-    return np.random.rand(output_units, input_units) * \
+    return np.random.randn(output_units, input_units) * \
         math.sqrt(1.0 / input_units)

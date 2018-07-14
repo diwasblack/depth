@@ -128,78 +128,72 @@ class Sequential():
 
         return model_cost
 
-    def train(self, input_matrix, target_matrix, max_iterations=1000,
-              logging_frequency=100, update_frequency=100, decay_frequency=500,
-              layers_filename="", training_logger=None):
+    def train(self, input_tensor, target_tensor, mini_batch_size=16,
+              max_epochs=1000, logging_frequency=100, update_frequency=100,
+              decay_frequency=500, layers_filename="", training_logger=None):
         """
         Train the neural network contructed
 
         Inputs:
-        input_matrix: a (n * N) matrix
-        target_matrix: a (m * N) matrix
+        input_tensor: a tensor to use as input
+        target_tensor: target tensor
 
         max_iterations: the maximum number of iterations
         logging_frequency: the frequency of logging the training cost
         decay_frequency: the frequency to decay learning rate at
-        update_frequency: the frequency of storing the weights to a file and decaying the learning
-            rate
+        update_frequency: the frequency of storing the weights to a file
         layers_filename: the file to use to store the layers
 
-        training_logger: the logger object to use for report training information
-
+        training_logger: the logger object to use for report training 
+            information
         """
-        number_of_iterations = 1
 
         if(layers_filename):
             store_layers = True
         else:
             store_layers = False
 
-        while(True):
+        for iteration in range(1, max_epochs+1):
             # Propagate the input forward
-            predicted_output = self.forward_pass(input_matrix)
+            predicted_output = self.forward_pass(input_tensor)
 
             # Calculate delta at the final layer
             delta = self.loss_function_derivative(
-                predicted_output, target_matrix)
+                predicted_output, target_tensor)
 
-            loss = self.loss_function(predicted_output, target_matrix)
+            loss = self.loss_function(predicted_output, target_tensor)
 
             # Add the regularied loss
             loss += self.get_regularization_cost()
 
             if(training_logger):
                 accuracy = self.prediction_accuracy(
-                    predicted_output, target_matrix)
+                    predicted_output, target_tensor)
                 log_message = "Iteration:{}, Loss:{}, Accuracy:{}".format(
-                    number_of_iterations, loss, accuracy)
+                    iteration, loss, accuracy)
                 training_logger.info(log_message)
             else:
-                if(number_of_iterations % logging_frequency == 0):
+                if(iteration % logging_frequency == 0):
                     logging.info("Loss: {}".format(loss))
 
             # Update weights using backpropagation
             self.backpropagation(delta)
 
-            if(number_of_iterations % update_frequency == 0):
+            if(iteration % update_frequency == 0):
                 if(store_layers):
                     # NOTE dump layers only after backpropagation update
                     self.dump_layer_weights(layers_filename)
 
             # Decay the learning rate if needed
-            if(number_of_iterations % decay_frequency == 0):
+            if(iteration % decay_frequency == 0):
                 # Decay the learning rate if needed
                 self.optimizer.decay_learning_rate()
 
-            if(loss < self.error_threshold or
-                    number_of_iterations == max_iterations):
-
+            if(loss < self.error_threshold or iteration == max_epochs):
                 # Dump layers information before exiting
                 if(store_layers):
                     self.dump_layer_weights(layers_filename)
                 break
-
-            number_of_iterations += 1
 
     def predict(self, input_matrix):
         return self.forward_pass(input_matrix, store_values=False)

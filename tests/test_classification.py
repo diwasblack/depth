@@ -38,7 +38,7 @@ class TestReluLayer(TestClassification):
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
-        nn_object.train(self.input_data, self.target_data, max_iterations=1)
+        nn_object.train(self.input_data, self.target_data, max_epochs=1)
 
 
 class TestLeakyReluLayer(TestClassification):
@@ -54,7 +54,7 @@ class TestLeakyReluLayer(TestClassification):
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
-        nn_object.train(self.input_data, self.target_data, max_iterations=1)
+        nn_object.train(self.input_data, self.target_data, max_epochs=1)
 
 
 class TestTanhLayer(TestClassification):
@@ -69,7 +69,7 @@ class TestTanhLayer(TestClassification):
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
-        nn_object.train(self.input_data, self.target_data, max_iterations=1)
+        nn_object.train(self.input_data, self.target_data, max_epochs=1)
 
 
 class TestSigmoidLayer(TestClassification):
@@ -84,7 +84,7 @@ class TestSigmoidLayer(TestClassification):
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
-        nn_object.train(self.input_data, self.target_data, max_iterations=1)
+        nn_object.train(self.input_data, self.target_data, max_epochs=1)
 
 
 class TestRegularizedClassification(TestClassification):
@@ -103,4 +103,4 @@ class TestRegularizedClassification(TestClassification):
         nn_object.compile(loss="cross_entropy")
 
         # Train the neural network
-        nn_object.train(self.input_data, self.target_data, max_iterations=1)
+        nn_object.train(self.input_data, self.target_data, max_epochs=1)

@@ -128,7 +128,24 @@ class Sequential():
 
         return model_cost
 
-    def train(self, input_tensor, target_tensor, mini_batch_size=16,
+    def get_batches(self, input_tensor, target_tensor, batch_size):
+        if(len(input_tensor.shape) == 2):
+            samples = input_tensor.shape[1]
+            permutations = np.random.permutation(samples)
+
+            input_tensor = input_tensor[:, permutations]
+            target_tensor = target_tensor[:, permutations]
+
+            i = 0
+
+            while(i <= samples):
+                batch_input = input_tensor[:, i:i+batch_size]
+                batch_target = target_tensor[:, i:i+batch_size]
+
+                yield (batch_input, batch_target)
+                i = i + batch_size
+
+    def train(self, input_tensor, target_tensor, mini_batch_size=32,
               max_epochs=1000, logging_frequency=100, update_frequency=100,
               decay_frequency=500, layers_filename="", training_logger=None):
         """
@@ -154,46 +171,50 @@ class Sequential():
             store_layers = False
 
         for iteration in range(1, max_epochs+1):
-            # Propagate the input forward
-            predicted_output = self.forward_pass(input_tensor)
+            for batch in self.get_batches(input_tensor, target_tensor,
+                                          mini_batch_size):
+                batch_input, batch_target = batch
 
-            # Calculate delta at the final layer
-            delta = self.loss_function_derivative(
-                predicted_output, target_tensor)
+                # Propagate the input forward
+                predicted_output = self.forward_pass(batch_input)
 
-            loss = self.loss_function(predicted_output, target_tensor)
+                # Calculate delta at the final layer
+                delta = self.loss_function_derivative(
+                    predicted_output, batch_target)
 
-            # Add the regularied loss
-            loss += self.get_regularization_cost()
+                loss = self.loss_function(predicted_output, batch_target)
 
-            if(training_logger):
-                accuracy = self.prediction_accuracy(
-                    predicted_output, target_tensor)
-                log_message = "Iteration:{}, Loss:{}, Accuracy:{}".format(
-                    iteration, loss, accuracy)
-                training_logger.info(log_message)
-            else:
-                if(iteration % logging_frequency == 0):
-                    logging.info("Loss: {}".format(loss))
+                # Add the regularied loss
+                loss += self.get_regularization_cost()
 
-            # Update weights using backpropagation
-            self.backpropagation(delta)
+                if(training_logger):
+                    accuracy = self.prediction_accuracy(
+                        predicted_output, batch_target)
+                    log_message = "Iteration:{}, Loss:{}, Accuracy:{}".format(
+                        iteration, loss, accuracy)
+                    training_logger.info(log_message)
+                else:
+                    if(iteration % logging_frequency == 0):
+                        logging.info("Loss: {}".format(loss))
 
-            if(iteration % update_frequency == 0):
-                if(store_layers):
-                    # NOTE dump layers only after backpropagation update
-                    self.dump_layer_weights(layers_filename)
+                # Update weights using backpropagation
+                self.backpropagation(delta)
 
-            # Decay the learning rate if needed
-            if(iteration % decay_frequency == 0):
+                if(iteration % update_frequency == 0):
+                    if(store_layers):
+                        # NOTE dump layers only after backpropagation update
+                        self.dump_layer_weights(layers_filename)
+
                 # Decay the learning rate if needed
-                self.optimizer.decay_learning_rate()
+                if(iteration % decay_frequency == 0):
+                    # Decay the learning rate if needed
+                    self.optimizer.decay_learning_rate()
 
-            if(loss < self.error_threshold or iteration == max_epochs):
-                # Dump layers information before exiting
-                if(store_layers):
-                    self.dump_layer_weights(layers_filename)
-                break
+                if(loss < self.error_threshold or iteration == max_epochs):
+                    # Dump layers information before exiting
+                    if(store_layers):
+                        self.dump_layer_weights(layers_filename)
+                    break
 
     def predict(self, input_matrix):
         return self.forward_pass(input_matrix, store_values=False)

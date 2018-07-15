@@ -46,14 +46,7 @@ class Convolution2D():
         Propagate the input data through the layer
         """
 
-        for c in range(self.channels):
-            logging.info(
-                "Forward pass for convolution layer channel: {}".format(c))
-
-            input_matrix = input_data[:, c, :, :]
-            filter_matrix = self.weights[:, c, :, :]
-
-            convolve_tensors(input_matrix, filter_matrix)
+        convolve_tensors(input_data, self.weights)
 
     def backprop(self, delta, optimizer):
         pass

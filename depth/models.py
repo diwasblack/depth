@@ -189,9 +189,16 @@ class Sequential():
                     if(iteration % logging_frequency == 0):
                         logging.info("Loss: {}".format(loss))
 
+                # Use backpropagation to propagate delta through layers
                 for layer in reversed(self.layers):
-                    # Propagate delta through layers
-                    delta = layer.backprop(delta, self.optimizer)
+                    gradient, delta = layer.backprop(delta)
+
+                    # Calculate the weight update for current layer
+                    weight_update = self.optimizer.get_updates(
+                        gradient, layer.previous_update)
+
+                    # Update layer weights
+                    layer.update_weights(weight_update)
 
                 if(iteration % update_frequency == 0):
                     if(store_layers):

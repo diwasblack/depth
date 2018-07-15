@@ -25,7 +25,7 @@ class DenseLayer():
         self.non_linear_activation = True
 
         # Store the result of previous gradient update
-        self.previous_updates = None
+        self.previous_update = None
 
         # Store the input values during the forward_pass
         self.input_values = None
@@ -133,7 +133,7 @@ class DenseLayer():
 
         return dloss_dz
 
-    def backprop(self, delta, optimizer):
+    def backprop(self, delta):
         """
         Propagate the delta through the layer to calculate delta for next
         layer and update the weight of current layer as well.
@@ -160,27 +160,25 @@ class DenseLayer():
             regularizer_gradient = self.regularizer.get_derivative_value(
                 self.weights[:, 1:])
 
-            zeroes = np.zeros((self.weights.shape[0], 1))
-
             # Do not regularizer the bias weights
-            regularizer_gradient = np.hstack((zeroes, regularizer_gradient))
+            bias_gradient = np.zeros((self.weights.shape[0], 1))
+            regularizer_gradient = np.hstack(
+                (bias_gradient, regularizer_gradient))
 
             gradient += regularizer_gradient
-
-        # Calculate the weight update for the layer
-        weight_update = optimizer.get_updates(gradient, self.previous_updates)
-
-        # Update weight of current layer
-        self.weights = self.weights - weight_update
-
-        # Store weight update
-        self.previous_updates = np.copy(weight_update)
 
         # Clean up memory of input and activation values
         self.input_values = None
         self.activation_values = None
 
-        return delta
+        return gradient, delta
+
+    def update_weights(self, weight_update):
+        # Update weight of current layer
+        self.weights = self.weights - weight_update
+
+        # Make a deep copy of the weights
+        self.previous_update = np.copy(weight_update)
 
     def get_regularized_cost(self):
         """

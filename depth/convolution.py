@@ -49,7 +49,8 @@ def convolve_tensors(data_tensor, kernel_tensor):
     m, n = kernel_tensor.shape[2:4]
     y, x = data_tensor.shape[2:4]
 
-    result = np.zeros((number_of_filters, channels, y, x), dtype=np.float32)
+    result = np.zeros((number_of_data, number_of_filters,
+                       y, x), dtype=np.float32)
 
     for c in range(channels):
         logging.debug(
@@ -74,5 +75,6 @@ def convolve_tensors(data_tensor, kernel_tensor):
                         stacked_data = np.vstack(
                             (np.zeros((1, y+2)), stacked_data, np.zeros((1, y+2))))
 
-                        result[f, c, :, :] = np.sum(
+                        result[index, f, i, j] += np.sum(
                             stacked_data[i:i+m, j:j+m]*kernel)
+    return result

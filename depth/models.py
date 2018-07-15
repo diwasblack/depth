@@ -68,14 +68,6 @@ class Sequential():
 
         return output
 
-    def backpropagation(self, delta):
-        """
-        Propagate delta through the layers
-        """
-        for layer in reversed(self.layers):
-            # Propagate delta through layers
-            delta = layer.backprop(delta, self.optimizer)
-
     def dump_layer_weights(self, layers_filename):
         """
         Update layer weights periodically in a file
@@ -197,8 +189,9 @@ class Sequential():
                     if(iteration % logging_frequency == 0):
                         logging.info("Loss: {}".format(loss))
 
-                # Update weights using backpropagation
-                self.backpropagation(delta)
+                for layer in reversed(self.layers):
+                    # Propagate delta through layers
+                    delta = layer.backprop(delta, self.optimizer)
 
                 if(iteration % update_frequency == 0):
                     if(store_layers):

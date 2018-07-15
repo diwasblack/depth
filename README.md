@@ -24,10 +24,10 @@ A sequential network with 2 hidden layer and a softmax layers as final layer wit
 ```python
 nn_object = Sequential()
 nn_object.add_layer(DenseLayer(
-    units=32, activation_function="tanh", input_dimension=10))
+    units=32, activation="tanh", input_dimension=10))
 nn_object.add_layer(DenseLayer(
-    units=64, activation_function="tanh"))
-nn_object.add_layer(DenseLayer(units=10, activation_function="softmax"))
+    units=64, activation="tanh"))
+nn_object.add_layer(DenseLayer(units=10, activation="softmax"))
 nn_object.compile(loss="cross_entropy", error_threshold=0.001)
 ```
 

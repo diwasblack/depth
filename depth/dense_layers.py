@@ -24,8 +24,9 @@ class DenseLayer():
 
         self.non_linear_activation = True
 
-        # Store the result of previous gradient update
-        self.previous_update = None
+        # Store the first moment and second moment
+        self.first_moment = 0
+        self.second_moment = 0
 
         # Store the input values during the forward_pass
         self.input_values = None
@@ -176,9 +177,6 @@ class DenseLayer():
     def update_weights(self, weight_update):
         # Update weight of current layer
         self.weights = self.weights - weight_update
-
-        # Make a deep copy of the weights
-        self.previous_update = np.copy(weight_update)
 
     def get_regularized_cost(self):
         """

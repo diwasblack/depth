@@ -40,8 +40,23 @@ def convolve_2d(data, kernel):
 
 
 def convolve_tensors(data_tensor, kernel_tensor):
-    # NOTE: Verify/Improve this
+    """
+    Compute the 2D convolution of the data_tensor with kernel_tensor
 
+    data_tensor = N * c * x * y tensor
+    kernel_tensor = f * c * m * n
+
+    where,
+    N = number of samples
+    c = number of channels
+    f = number of filters
+
+    x, y = size of data
+    m, n = filter size
+    """
+
+    # Pad width to use for x and y axis
+    pad_width = 1
     number_of_data = data_tensor.shape[0]
     number_of_filters = kernel_tensor.shape[0]
 
@@ -52,10 +67,11 @@ def convolve_tensors(data_tensor, kernel_tensor):
                        x, y), dtype=np.float32)
 
     # Pad the data with zeros
-    pads = [(0, 0), (0, 0), (1, 1), (1, 1)]
+    pads = [(0, 0), (0, 0), (pad_width, pad_width), (pad_width, pad_width)]
     padded_tensor = np.pad(
         data_tensor, pads, mode="constant", constant_values=0)
 
+    # NOTE: Verify/Improve this
     # Process data one at a time
     for index in range(number_of_data):
         logging.debug("Convolution for data n={}".format(index))

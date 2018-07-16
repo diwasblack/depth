@@ -56,10 +56,12 @@ def convolve_tensors(data_tensor, kernel_tensor):
     padded_tensor = np.pad(
         data_tensor, pads, mode="constant", constant_values=0)
 
-    for i in range(x):
-        for j in range(y):
-            # Process data one at a time
-            for index in range(number_of_data):
+    # Process data one at a time
+    for index in range(number_of_data):
+        logging.debug("Convolution for data n={}".format(index))
+
+        for i in range(x):
+            for j in range(y):
                 data_block = padded_tensor[index, :, i:i+m, j:j+m]
 
                 for f in range(number_of_filters):

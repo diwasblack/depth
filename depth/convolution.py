@@ -46,18 +46,18 @@ def convolve_tensors(data_tensor, kernel_tensor):
     number_of_filters = kernel_tensor.shape[0]
 
     m, n = kernel_tensor.shape[2:4]
-    y, x = data_tensor.shape[2:4]
+    x, y = data_tensor.shape[2:4]
 
     result = np.zeros((number_of_data, number_of_filters,
-                       y, x), dtype=np.float32)
+                       x, y), dtype=np.float32)
 
     # Pad the data with zeros
     pads = [(0, 0), (0, 0), (1, 1), (1, 1)]
     padded_tensor = np.pad(
         data_tensor, pads, mode="constant", constant_values=0)
 
-    for i in range(y):
-        for j in range(x):
+    for i in range(x):
+        for j in range(y):
             # Process data one at a time
             for index in range(number_of_data):
                 data_block = padded_tensor[index, :, i:i+m, j:j+m]

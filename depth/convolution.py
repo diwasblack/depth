@@ -7,6 +7,7 @@ def convolve_tensors(data_tensor, kernel_tensor):
     """
     Compute the 2D convolution of the data_tensor with kernel_tensor
 
+    input:
     data_tensor = N * c * x * y tensor
     kernel_tensor = f * c * m * n
 
@@ -17,6 +18,9 @@ def convolve_tensors(data_tensor, kernel_tensor):
 
     x, y = size of data
     m, n = filter size
+
+    output:
+    a N * f * x * y tensor
     """
 
     if(data_tensor.shape[1] != kernel_tensor.shape[1]):

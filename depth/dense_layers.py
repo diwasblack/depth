@@ -78,30 +78,27 @@ class DenseLayer():
         if(self.activation == "sigmoid"):
             self.activation_function = sigmoid_function
             self.activation_function_derivative = sigmoid_function_derivative
-
         elif(self.activation == "tanh"):
             self.activation_function = hyperbolic_tangent
             self.activation_function_derivative = hyperbolic_tangent_derivative
-
         elif(self.activation == "relu"):
             self.activation_function = relu
             self.activation_function_derivative = relu_derivative
-
         elif(self.activation == "leakyrelu"):
             alpha = self.kwargs.get("alpha", 0.0)
             # Assign relu function to be the activation function
             self.activation_function = leaky_relu(alpha=alpha)
             self.activation_function_derivative = leaky_relu_derivative(
                 alpha=alpha)
-
         elif(self.activation == "linear"):
             # Return the input as without modification
             self.activation_function = lambda x: x
             self.non_linear_activation = False
-
         elif(self.activation == "softmax"):
             self.activation_function = softmax_function
             self.non_linear_activation = False
+        else:
+            raise Exception("Unknown activation function")
 
     def forward_pass(self, input_matrix, store_values=True):
         """

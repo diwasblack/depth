@@ -46,7 +46,13 @@ class Convolution2D():
         Propagate the input data through the layer
         """
 
-        convolve_tensors(input_data, self.weights)
+        # Perform the 2D convolution of the tensors
+        z = convolve_tensors(input_data, self.weights)
+
+        # Apply activation function
+        activation = self.activation_function(z)
+
+        return activation
 
     def backprop(self, delta, optimizer):
         pass

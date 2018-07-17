@@ -194,8 +194,13 @@ class Sequential():
                     gradient, delta = layer.backprop(delta)
 
                     # Calculate the weight update for current layer
-                    weight_update = self.optimizer.get_updates(
-                        gradient, layer.previous_update)
+                    weight_update, first_moment, second_moment = self.optimizer.get_updates(
+                        gradient, layer.first_moment, layer.second_moment,
+                        time_step=iteration)
+
+                    # Store the first moment and second_moment
+                    layer.first_moment = first_moment
+                    layer.second_moment = second_moment
 
                     # Update layer weights
                     layer.update_weights(weight_update)

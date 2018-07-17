@@ -21,6 +21,7 @@ class DenseLayer():
         self.output_units = units
         self.activation = activation
         self.kwargs = kwargs
+        self.output_shape = np.array([self.output_units, 1])
 
         self.non_linear_activation = True
 
@@ -36,12 +37,12 @@ class DenseLayer():
         # Store the regularizer to use with the layer
         self.regularizer = regularizer
 
-    def get_output_dimension(self):
+    def get_output_shape(self):
         """
-        Return the dimension of output from this layer
+        Return the shape of the output from this layer
         """
 
-        return self.output_units
+        return self.output_shape
 
     def initialize_layer_weights(self):
         # Check if input and output units are properly initalized

@@ -3,42 +3,6 @@ import logging
 import numpy as np
 
 
-def zero_padding(tensor):
-    """
-    Pad the 2D tensor with zeros
-    """
-
-    xd = tensor.shape[0]
-
-    tensor = np.hstack(
-        (np.zeros((xd, 1)), tensor, np.zeros((xd, 1))))
-
-    yd = tensor.shape[1]
-
-    tensor = np.vstack(
-        (np.zeros((1, yd)), tensor, np.zeros((1, yd))))
-
-    return tensor
-
-
-def convolve_2d(data, kernel):
-    """
-    Perform a 2D convole of data with the kernel
-    """
-    m, n = kernel.shape
-    y, x = data.shape
-
-    # Zero pad the data
-    stacked_data = zero_padding(data)
-
-    result = np.zeros((y, x))
-    for i in range(y):
-        for j in range(x):
-            result[i][j] = np.sum(stacked_data[i:i+m, j:j+m]*kernel)
-
-    return result
-
-
 def convolve_tensors(data_tensor, kernel_tensor):
     """
     Compute the 2D convolution of the data_tensor with kernel_tensor

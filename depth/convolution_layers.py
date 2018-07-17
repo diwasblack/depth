@@ -3,7 +3,7 @@ import logging
 import numpy as np
 
 from .activations import relu, relu_derivative
-from .convolution import convolve_tensors
+from .convolution import convolve_tensors, transposed_convolution, convolve2d
 
 
 class Convolution2D():
@@ -56,8 +56,15 @@ class Convolution2D():
         Propagate the input data through the layer
         """
 
+        self.samples = input_data.shape[0]
+
         # Perform the 2D convolution of the tensors
-        z = convolve_tensors(input_data, self.weights)
+        z = np.zeros((self.samples, self.filters, *self.input_shape[1:]))
+        for f in range(self.filters):
+            z_filter = convolve2d(input_data, self.weights[f])
+
+            # Sum up the values from the channels/filters
+            z[:, f, :, :] = np.sum(z_filter, axis=1)
 
         # Apply activation function
         activation_values = self.activation_function(z)

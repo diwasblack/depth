@@ -19,6 +19,9 @@ def convolve_tensors(data_tensor, kernel_tensor):
     m, n = filter size
     """
 
+    if(data_tensor.shape[1] != kernel_tensor.shape[1]):
+        raise Exception("Number of channels should be same")
+
     # Pad width to use for x and y axis
     pad_width = 1
     number_of_data = data_tensor.shape[0]

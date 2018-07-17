@@ -55,9 +55,13 @@ class Convolution2D():
         z = convolve_tensors(input_data, self.weights)
 
         # Apply activation function
-        activation = self.activation_function(z)
+        activation_values = self.activation_function(z)
 
-        return activation
+        if(store_values):
+            self.input_values = input_data
+            self.activation_values = activation_values
+
+        return activation_values
 
     def backprop(self, delta, optimizer):
         pass

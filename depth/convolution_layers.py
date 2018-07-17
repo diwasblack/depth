@@ -11,14 +11,19 @@ class Convolution2D():
     Implementation of 2D convolution layer
     """
 
-    def __init__(self, filters, kernel_shape, input_shape=None, strides=(1, 1), activation="relu"):
+    def __init__(self, filters, kernel_shape, input_shape=None, strides=(1, 1),
+                 activation="relu", **kwargs):
         self.activation = activation
+        self.kwargs = kwargs
+
         self.filters = filters
         self.kernel_shape = np.array(kernel_shape)
         self.strides = strides
-        self.input_shape = np.array(input_shape)
 
-        self.output_shape = np.array(self.filters, *self.input_shape[1:])
+        self.non_linear_activation = True
+
+        self.input_shape = np.array(input_shape)
+        self.output_shape = np.array([self.filters, *self.input_shape[1:]])
 
         # Assumes the channel will be in the first position
         self.channels = self.input_shape[0]
@@ -63,8 +68,32 @@ class Convolution2D():
 
         return activation_values
 
-    def backprop(self, delta, optimizer):
-        pass
+    def backprop(self, delta):
+        # Propagate delta through the activation function
+        if(self.non_linear_activation):
+            derivative_values = self.activation_function_derivative(
+                self.activation_values)
+            dloss_dz = np.multiply(delta, derivative_values)
+        else:
+            dloss_dz = np.copy(delta)
+
+        # Perform 2D convolution of input block with kernel_tensor
+        gradient = convolve_tensors(self.input_values, dloss_dz)
+
+        # Use number of samples as normalization_factor for gradient
+        normalization_factor = self.input_values.shape[0]
+
+        # Average gradient across all samples
+        gradient_avg = np.sum(gradient, axis=0) / normalization_factor
+
+        # Perform 2D convolution of delta with kernel_tensor
+        delta = convolve_tensors(dloss_dz, self.kernel_tensor)
+
+        # Cleanup memory
+        self.input_values = None
+        self.activation_values = None
+
+        return gradient_avg, delta
 
     def get_regularized_cost(self):
         pass

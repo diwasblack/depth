@@ -16,6 +16,23 @@ Usage Instruction
     pip install -e .
     ```
 
+Features
+-----------------
+- Dense layer with activations:
+    - Sigmoid
+    - Tanh
+    - ReLu
+    - LeakyRelu
+    - Softmax
+    - Linear
+- Optimizers
+    - Stochastic Gradient Descent
+    - ADAM
+- Loss functions
+    - Mean Squared Error
+    - Cross entropy loss
+- Regularizer
+    - L2 Regularizer
 
 Examples
 --------
@@ -31,4 +48,4 @@ nn_object.add_layer(DenseLayer(units=10, activation="softmax"))
 nn_object.compile(loss="cross_entropy", error_threshold=0.001)
 ```
 
-See the [examples folder](examples) for more examples.
+See the [examples folder](examples) for more.

@@ -18,6 +18,8 @@ class Convolution2D():
         self.strides = strides
         self.input_shape = np.array(input_shape)
 
+        self.output_shape = np.array(self.filters, *self.input_shape[1:])
+
         # Assumes the channel will be in the first position
         self.channels = self.input_shape[0]
 
@@ -40,6 +42,9 @@ class Convolution2D():
         # Constuct a weights/kernel tensor
         self.weights = np.random.randn(
             self.filters, self.channels, *self.kernel_shape) * variance
+
+    def get_output_shape(self):
+        return self.output_shape
 
     def forward_pass(self, input_data, store_values=False):
         """

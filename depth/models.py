@@ -29,9 +29,15 @@ class Sequential():
 
     def add_layer(self, layer):
         if(self.layers):
-            previous_units = self.layers[-1].get_output_shape()[0]
-            layer.input_units = previous_units
+            output_shape = self.layers[-1].get_output_shape()
 
+            if(len(output_shape) == 2):
+                layer.input_units = output_shape[0]
+
+            elif(len(output_shape) == 3):
+                layer.input_shape = output_shape
+
+        # Construct the layer
         layer.construct_layer()
 
         # Add layer to the list
@@ -137,6 +143,25 @@ class Sequential():
                 yield (batch_input, batch_target)
                 i = i + batch_size
 
+        elif(len(input_tensor.shape) == 4):
+            samples = input_tensor.shape[0]
+            permutations = np.random.permutation(samples)
+
+            input_tensor = input_tensor[permutations]
+            target_tensor = target_tensor[:, permutations]
+
+            i = 0
+
+            while(i <= samples):
+                batch_input = input_tensor[i:i+batch_size]
+                batch_target = target_tensor[:, i:i+batch_size]
+
+                yield (batch_input, batch_target)
+                i = i + batch_size
+
+        else:
+            raise Exception("Input tensor dimension not recognized")
+
     def train(self, input_tensor, target_tensor, mini_batch_size=32,
               max_epochs=1000, logging_frequency=100, update_frequency=100,
               decay_frequency=500, layers_filename="", training_logger=None):
@@ -153,7 +178,7 @@ class Sequential():
         update_frequency: the frequency of storing the weights to a file
         layers_filename: the file to use to store the layers
 
-        training_logger: the logger object to use for report training 
+        training_logger: the logger object to use for report training
             information
         """
 

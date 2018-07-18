@@ -69,6 +69,7 @@ class Sequential():
 
     def forward_pass(self, input_matrix, store_values=True):
         output = np.copy(input_matrix)
+
         for layer in self.layers:
             output = layer.forward_pass(output, store_values=store_values)
 
@@ -245,12 +246,6 @@ class Sequential():
                 if(iteration % decay_frequency == 0):
                     # Decay the learning rate if needed
                     self.optimizer.decay_learning_rate()
-
-                if(loss < self.error_threshold or iteration == max_epochs):
-                    # Dump layers information before exiting
-                    if(store_layers):
-                        self.dump_layer_weights(layers_filename)
-                    break
 
     def predict(self, input_matrix):
         return self.forward_pass(input_matrix, store_values=False)

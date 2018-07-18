@@ -181,6 +181,9 @@ class Sequential():
         training_logger: the logger object to use for report training
             information
         """
+        # Check if the model is ready for training
+        if(not(self.optimizer)):
+            raise Exception("Optimizer not assigned")
 
         if(layers_filename):
             store_layers = True

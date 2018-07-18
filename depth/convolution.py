@@ -84,6 +84,9 @@ def convolve_tensors(data_tensor, kernel_tensor):
 
     output:
     a N * f * x * y tensor
+
+    See:
+    https://stackoverflow.com/questions/2448015/2d-convolution-using-python-and-numpy/42579291#42579291
     """
 
     if(data_tensor.shape[1] != kernel_tensor.shape[1]):
@@ -93,9 +96,18 @@ def convolve_tensors(data_tensor, kernel_tensor):
     pad_width = 1
     number_of_data = data_tensor.shape[0]
     number_of_filters = kernel_tensor.shape[0]
+    channels = data_tensor.shape[1]
 
     m, n = kernel_tensor.shape[2:4]
     x, y = data_tensor.shape[2:4]
+
+    conv_string = "{0}*{1}*{2}*{3} tensor with {4}*{1}*{5}*{6} tensor".format(
+        number_of_data, channels, x, y, number_of_filters, m, n)
+
+    logging.debug("Performing convolution of " + conv_string)
+
+    x = x - m + 2 * pad_width + 1
+    y = y - m + 2 * pad_width + 1
 
     result = np.zeros((number_of_data, number_of_filters,
                        x, y), dtype=np.float32)
@@ -105,10 +117,8 @@ def convolve_tensors(data_tensor, kernel_tensor):
     padded_tensor = np.pad(
         data_tensor, pads, mode="constant", constant_values=0)
 
-    # NOTE: Verify/Improve this
     # Process data one at a time
     for index in range(number_of_data):
-        logging.debug("Convolution for data n={}".format(index))
 
         for i in range(x):
             for j in range(y):
@@ -118,4 +128,5 @@ def convolve_tensors(data_tensor, kernel_tensor):
                     convolution = np.multiply(data_block, kernel_tensor[f])
                     result[index, f, i, j] = np.sum(convolution)
 
+    logging.debug("Finished calculating convolution")
     return result

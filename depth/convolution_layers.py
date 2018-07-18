@@ -1,9 +1,7 @@
-import logging
-
 import numpy as np
 
 from .activations import relu, relu_derivative
-from .convolution import convolve_tensors, transposed_convolution, convolve2d
+from .convolution import convolve2d
 
 
 class Convolution2D():
@@ -23,7 +21,8 @@ class Convolution2D():
         self.non_linear_activation = True
 
         self.input_shape = np.array(input_shape)
-        self.output_shape = np.array([self.filters, *self.input_shape[1:]])
+        self.image_size = np.array(input_shape[1:])
+        self.output_shape = np.array([self.filters, *self.image_size])
 
         # Assumes the channel will be in the first position
         self.channels = self.input_shape[0]
@@ -59,7 +58,7 @@ class Convolution2D():
         self.samples = input_data.shape[0]
 
         # Perform the 2D convolution of the tensors
-        z = np.zeros((self.samples, self.filters, *self.input_shape[1:]))
+        z = np.zeros((self.samples, self.filters, *self.image_size))
         for f in range(self.filters):
             z_filter = convolve2d(input_data, self.weights[f])
 
@@ -84,17 +83,36 @@ class Convolution2D():
         else:
             dloss_dz = np.copy(delta)
 
-        # Perform 2D convolution of input block with kernel_tensor
-        gradient = convolve_tensors(self.input_values, dloss_dz)
+        gradient = np.zeros((
+            self.samples, self.filters, self.channels, *self.kernel_shape),
+            dtype=np.float32)
 
-        # Use number of samples as normalization_factor for gradient
-        normalization_factor = self.input_values.shape[0]
+        delta = np.zeros((
+            self.samples, self.channels, *self.image_size), dtype=np.float32)
+
+        for f in range(self.filters):
+            # Seperate the delta for each channel/filter
+            dloss_dz_map = dloss_dz[:, f, :, :]
+
+            # Repeat the delta across each input channel/filter
+            dloss_dz_block = np.repeat(
+                dloss_dz_map[:, np.newaxis, :, :], 3, axis=1)
+
+            for i in range(self.samples):
+                input_delta_conv = convolve2d(
+                        self.input_values[i:i+1], dloss_dz_block[i])
+
+                delta_weights_conv = convolve2d(
+                    dloss_dz_block[i:i+1], self.weights[f])
+
+                # Add delta from each filter
+                delta[i] += delta_weights_conv[0]
+
+                gradient[i, f, :, :, :] = input_delta_conv[0]
 
         # Average gradient across all samples
-        gradient_avg = np.sum(gradient, axis=0) / normalization_factor
-
-        # Perform 2D convolution of delta with kernel_tensor
-        delta = convolve_tensors(dloss_dz, self.kernel_tensor)
+        # Use number of samples as normalization_factor for gradient
+        gradient_avg = np.sum(gradient, axis=0) / self.samples
 
         # Cleanup memory
         self.input_values = None

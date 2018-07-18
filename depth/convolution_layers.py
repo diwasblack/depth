@@ -24,6 +24,10 @@ class Convolution2D():
         self.image_size = np.array(input_shape[1:])
         self.output_shape = np.array([self.filters, *self.image_size])
 
+        # Store the first moment and second moment
+        self.first_moment = 0
+        self.second_moment = 0
+
     def construct_layer(self):
         # Assumes the channel will be in the first position
         self.channels = self.input_shape[0]
@@ -100,7 +104,7 @@ class Convolution2D():
 
             for i in range(self.samples):
                 input_delta_conv = convolve2d(
-                        self.input_values[i:i+1], dloss_dz_block[i])
+                    self.input_values[i:i+1], dloss_dz_block[i])
 
                 delta_weights_conv = convolve2d(
                     dloss_dz_block[i:i+1], self.weights[f])
@@ -121,7 +125,11 @@ class Convolution2D():
         return gradient_avg, delta
 
     def get_regularized_cost(self):
-        pass
+        return 0
+
+    def update_weights(self, weight_update):
+        # Update weight of the layer
+        self.weights = self.weights - weight_update
 
 
 class Flatten():

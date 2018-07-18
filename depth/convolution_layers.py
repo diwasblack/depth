@@ -96,7 +96,7 @@ class Convolution2D():
 
             # Repeat the delta across each input channel/filter
             dloss_dz_block = np.repeat(
-                dloss_dz_map[:, np.newaxis, :, :], 3, axis=1)
+                dloss_dz_map[:, np.newaxis, :, :], self.input_shape[0], axis=1)
 
             for i in range(self.samples):
                 input_delta_conv = convolve2d(

@@ -24,10 +24,10 @@ class Convolution2D():
         self.image_size = np.array(input_shape[1:])
         self.output_shape = np.array([self.filters, *self.image_size])
 
+    def construct_layer(self):
         # Assumes the channel will be in the first position
         self.channels = self.input_shape[0]
 
-    def construct_layer(self):
         if(self.activation == "relu"):
             self.activation_function = relu
             self.activation_function_derivative = relu_derivative
@@ -121,4 +121,15 @@ class Convolution2D():
         return gradient_avg, delta
 
     def get_regularized_cost(self):
+        pass
+
+
+class Flatten():
+    def __init__(self):
+        pass
+
+    def construct_layer(self):
+        pass
+
+    def forward_pass(self):
         pass

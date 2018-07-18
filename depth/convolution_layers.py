@@ -28,7 +28,10 @@ class Convolution2D():
         self.first_moment = 0
         self.second_moment = 0
 
-    def construct_layer(self):
+    def construct_layer(self, previous_layer=None):
+        if(previous_layer is not None):
+            self.input_shape = previous_layer.get_output_shape()
+
         # Assumes the channel will be in the first position
         self.channels = self.input_shape[0]
 
@@ -136,7 +139,12 @@ class Flatten():
     def __init__(self):
         self.input_shape = None
 
-    def construct_layer(self):
+    def construct_layer(self, previous_layer=None):
+        if(previous_layer is None):
+            raise Exception("Previous layer object is empty")
+
+        self.input_shape = previous_layer.get_output_shape()
+
         units = self.input_shape.prod()
         self.output_shape = np.array([units, 1])
         self.output_units = units

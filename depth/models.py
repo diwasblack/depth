@@ -29,16 +29,10 @@ class Sequential():
 
     def add_layer(self, layer):
         if(self.layers):
-            output_shape = self.layers[-1].get_output_shape()
-
-            if(len(output_shape) == 2):
-                layer.input_units = output_shape[0]
-
-            elif(len(output_shape) == 3):
-                layer.input_shape = output_shape
-
-        # Construct the layer
-        layer.construct_layer()
+            layer.construct_layer(previous_layer=self.layers[-1])
+        else:
+            # Construct the layer
+            layer.construct_layer()
 
         # Add layer to the list
         self.layers.append(layer)

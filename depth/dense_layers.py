@@ -67,10 +67,14 @@ class DenseLayer():
             self.weights = -0.5 + \
                 np.random.rand(self.output_units, self.input_units+1)
 
-    def construct_layer(self):
+    def construct_layer(self, previous_layer=None):
         """
         Helper function to construct the layer as per the initialized values
         """
+
+        if(previous_layer is not None):
+            self.input_units = previous_layer.get_output_shape().prod()
+
         # Initialize the weights
         self.initialize_layer_weights()
 

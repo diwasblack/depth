@@ -126,10 +126,36 @@ class Convolution2D():
 
 class Flatten():
     def __init__(self):
-        pass
+        self.input_shape = None
 
     def construct_layer(self):
-        pass
+        units = self.input_shape.prod()
+        self.output_shape = np.array([units, 1])
+        self.output_units = units
 
-    def forward_pass(self):
-        pass
+    def forward_pass(self, input_data, store_values=False):
+        self.samples = input_data.shape[0]
+
+        # Flatten the data
+        flattened_data = input_data.reshape(self.samples, self.output_units)
+
+        # Transpose the data into column format and return
+        return flattened_data.T
+
+    def backprop(self, delta):
+        # Truncate the delta for the bias
+        delta = delta[1:, :]
+
+        # Convert the delta in row wise format
+        delta = delta.T
+
+        # Reshape the flattened deltas
+        delta = delta.reshape(self.samples, *self.input_shape)
+
+        return None, delta
+
+    def get_output_shape(self):
+        return self.output_shape
+
+    def get_regularized_cost(self):
+        return 0

@@ -221,6 +221,9 @@ class Sequential():
                 for layer in reversed(self.layers):
                     gradient, delta = layer.backprop(delta)
 
+                    if gradient is None:
+                        continue
+
                     # Calculate the weight update for current layer
                     weight_update, first_moment, second_moment = self.optimizer.get_updates(
                         gradient, layer.first_moment, layer.second_moment,

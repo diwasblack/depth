@@ -28,6 +28,8 @@ class Convolution2D():
         self.first_moment = 0
         self.second_moment = 0
 
+        self.regularizer = regularizer
+
     def construct_layer(self, previous_layer=None):
         if(previous_layer is not None):
             self.input_shape = previous_layer.get_output_shape()
@@ -128,7 +130,10 @@ class Convolution2D():
         return gradient_avg, delta
 
     def get_regularized_cost(self):
-        return 0
+        if(self.regularizer):
+            return self.regularizer.get_cost(self.weights)
+        else:
+            return 0
 
     def update_weights(self, weight_update):
         # Update weight of the layer

@@ -1,12 +1,16 @@
 import numpy as np
 
+from .layer_base import BaseLayer
 
-class MaxPooling():
+
+class MaxPooling(BaseLayer):
     """
     Implementation for the max pooling layer
     """
 
     def __init__(self, pool_size=(2, 2), strides=(2, 2), padding=0):
+        super().__init__()
+
         self.filters = None
         self.samples = None
         self.pool_size = np.array(pool_size)
@@ -18,9 +22,6 @@ class MaxPooling():
         self.output_shape = None
 
         self.output_size = None
-
-    def get_output_shape(self):
-        return self.output_shape
 
     def construct_layer(self, previous_layer=None):
         if(previous_layer is None):
@@ -105,6 +106,3 @@ class MaxPooling():
                         new_delta[index, f, max_index[0], max_index[1]] = delta_x
 
         return None, new_delta
-
-    def get_regularized_cost(self):
-        return 0

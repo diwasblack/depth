@@ -8,15 +8,19 @@ from .activations import (
     softmax_function)
 from .initializers import (
     HeWeightInitializer, XavierWeightInitializer)
+from .layer_base import BaseLayer
 
 
-class DenseLayer():
+class DenseLayer(BaseLayer):
     """
     Base class for dense neural network layers
     """
 
     def __init__(self, units=32, input_dimension=None, regularizer=None,
                  activation="tanh", **kwargs):
+
+        super().__init__()
+
         self.input_units = input_dimension
         self.output_units = units
         self.activation = activation
@@ -35,12 +39,6 @@ class DenseLayer():
 
         # Store the regularizer to use with the layer
         self.regularizer = regularizer
-
-    def get_output_shape(self):
-        """
-        Return the shape of the output from this layer
-        """
-        return self.output_shape
 
     def initialize_layer_weights(self):
         # Check if input and output units are properly initalized
@@ -171,13 +169,3 @@ class DenseLayer():
     def update_weights(self, weight_update):
         # Update weight of current layer
         self.weights = self.weights - weight_update
-
-    def get_regularized_cost(self):
-        """
-        Get the cost of the layer using the regularizer provided
-        """
-
-        if(self.regularizer):
-            return self.regularizer.get_cost(self.weights)
-        else:
-            return 0

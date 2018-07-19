@@ -2,15 +2,18 @@ import numpy as np
 
 from .activations import relu, relu_derivative
 from .convolution import convolve2d
+from .layer_base import BaseLayer
 
 
-class Convolution2D():
+class Convolution2D(BaseLayer):
     """
     Implementation of 2D convolution layer
     """
 
     def __init__(self, filters, kernel_shape, input_shape=None, strides=(1, 1),
                  activation="relu", regularizer=None, **kwargs):
+        super().__init__()
+
         self.activation = activation
         self.kwargs = kwargs
 
@@ -34,9 +37,6 @@ class Convolution2D():
 
         # Store the regularizer to use with the layer
         self.regularizer = regularizer
-
-    def get_output_shape(self):
-        return self.output_shape
 
     def initialize_layer_weights(self):
         input_units = self.input_shape.prod()
@@ -138,19 +138,11 @@ class Convolution2D():
         # Update weight of the layer
         self.weights = self.weights - weight_update
 
-    def get_regularized_cost(self):
-        if(self.regularizer):
-            return self.regularizer.get_cost(self.weights)
-        else:
-            return 0
 
-
-class Flatten():
+class Flatten(BaseLayer):
     def __init__(self):
+        super().__init__()
         self.input_shape = None
-
-    def get_output_shape(self):
-        return self.output_shape
 
     def construct_layer(self, previous_layer=None):
         if(previous_layer is None):
@@ -182,6 +174,3 @@ class Flatten():
         delta = delta.reshape(self.samples, *self.input_shape)
 
         return None, delta
-
-    def get_regularized_cost(self):
-        return 0

@@ -28,20 +28,15 @@ class Convolution2D():
         self.first_moment = 0
         self.second_moment = 0
 
+        # Store the input and activation values during the forward pass
+        self.input_values = None
+        self.activation_values = None
+
+        # Store the regularizer to use with the layer
         self.regularizer = regularizer
 
-    def construct_layer(self, previous_layer=None):
-        if(previous_layer is not None):
-            self.input_shape = previous_layer.get_output_shape()
-
-        # Assumes the channel will be in the first position
-        self.channels = self.input_shape[0]
-
-        if(self.activation == "relu"):
-            self.activation_function = relu
-            self.activation_function_derivative = relu_derivative
-
-        self.initialize_layer_weights()
+    def get_output_shape(self):
+        return self.output_shape
 
     def initialize_layer_weights(self):
         input_units = self.input_shape.prod()
@@ -56,8 +51,18 @@ class Convolution2D():
         self.weights = np.random.randn(
             self.filters, self.channels, *self.kernel_shape) * variance
 
-    def get_output_shape(self):
-        return self.output_shape
+    def construct_layer(self, previous_layer=None):
+        if(previous_layer is not None):
+            self.input_shape = previous_layer.get_output_shape()
+
+        # Assumes the channel will be in the first position
+        self.channels = self.input_shape[0]
+
+        if(self.activation == "relu"):
+            self.activation_function = relu
+            self.activation_function_derivative = relu_derivative
+
+        self.initialize_layer_weights()
 
     def forward_pass(self, input_data, store_values=False):
         """
@@ -129,20 +134,23 @@ class Convolution2D():
 
         return gradient_avg, delta
 
+    def update_weights(self, weight_update):
+        # Update weight of the layer
+        self.weights = self.weights - weight_update
+
     def get_regularized_cost(self):
         if(self.regularizer):
             return self.regularizer.get_cost(self.weights)
         else:
             return 0
 
-    def update_weights(self, weight_update):
-        # Update weight of the layer
-        self.weights = self.weights - weight_update
-
 
 class Flatten():
     def __init__(self):
         self.input_shape = None
+
+    def get_output_shape(self):
+        return self.output_shape
 
     def construct_layer(self, previous_layer=None):
         if(previous_layer is None):
@@ -174,9 +182,6 @@ class Flatten():
         delta = delta.reshape(self.samples, *self.input_shape)
 
         return None, delta
-
-    def get_output_shape(self):
-        return self.output_shape
 
     def get_regularized_cost(self):
         return 0

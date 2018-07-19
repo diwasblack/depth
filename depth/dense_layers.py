@@ -29,9 +29,8 @@ class DenseLayer():
         self.first_moment = 0
         self.second_moment = 0
 
-        # Store the input values during the forward_pass
+        # Store the input and activation value during the forward pass
         self.input_values = None
-        # Store the activation value calculated during the forward pass
         self.activation_values = None
 
         # Store the regularizer to use with the layer
@@ -41,7 +40,6 @@ class DenseLayer():
         """
         Return the shape of the output from this layer
         """
-
         return self.output_shape
 
     def initialize_layer_weights(self):

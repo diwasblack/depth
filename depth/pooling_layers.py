@@ -19,6 +19,9 @@ class MaxPooling():
 
         self.output_size = None
 
+    def get_output_shape(self):
+        return self.output_shape
+
     def construct_layer(self, previous_layer=None):
         if(previous_layer is None):
             raise Exception("Received None for previous_layer")
@@ -39,9 +42,6 @@ class MaxPooling():
         self.output_size = np.array([x_new, y_new], dtype=np.int)
         self.output_shape = np.array(
             [self.filters, x_new, y_new], dtype=np.int)
-
-    def get_output_shape(self):
-        return self.output_shape
 
     def forward_pass(self, input_data, store_values=False):
         """

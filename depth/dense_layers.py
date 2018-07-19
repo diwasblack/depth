@@ -50,18 +50,14 @@ class DenseLayer(BaseLayer):
 
         # Select an initializer for the weights
         if(self.activation in ["relu", "leakyrelu"]):
-            self.weights = HeWeightInitializer(
-                self.input_units+1, self.output_units)
-
+            variance = np.sqrt(2.0 / self.input_units + 1)
         elif(self.activation in ["tanh", "sigmoid"]):
-            self.weights = XavierWeightInitializer(
-                self.input_units+1, self.output_units)
-
+            variance = np.sqrt(2.0 / self.input_units + 1)
         else:
-            # Randomly initialize weights in the range [-0.5, 0.5]
-            # Add bias unit to each layer
-            self.weights = -0.5 + \
-                np.random.rand(self.output_units, self.input_units+1)
+            variance = 0.5
+
+        self.weights = np.random.randn(
+            self.output_units, self.input_units+1) * variance
 
     def construct_layer(self, previous_layer=None):
         """

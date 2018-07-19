@@ -10,7 +10,7 @@ class Convolution2D():
     """
 
     def __init__(self, filters, kernel_shape, input_shape=None, strides=(1, 1),
-                 activation="relu", **kwargs):
+                 activation="relu", regularizer=None, **kwargs):
         self.activation = activation
         self.kwargs = kwargs
 

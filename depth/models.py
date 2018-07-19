@@ -8,6 +8,7 @@ from .loss_functions import mean_squared_error, cross_entropy
 from .helpers import vector_to_label
 from .metrics import categorical_accuracy
 from .optimizers import SGD
+from .helpers import get_mini_batches
 
 
 class Sequential():
@@ -121,42 +122,6 @@ class Sequential():
 
         return model_cost
 
-    def get_batches(self, input_tensor, target_tensor, batch_size):
-        if(len(input_tensor.shape) == 2):
-            samples = input_tensor.shape[1]
-            permutations = np.random.permutation(samples)
-
-            input_tensor = input_tensor[:, permutations]
-            target_tensor = target_tensor[:, permutations]
-
-            i = 0
-
-            while(i <= samples):
-                batch_input = input_tensor[:, i:i+batch_size]
-                batch_target = target_tensor[:, i:i+batch_size]
-
-                yield (batch_input, batch_target)
-                i = i + batch_size
-
-        elif(len(input_tensor.shape) == 4):
-            samples = input_tensor.shape[0]
-            permutations = np.random.permutation(samples)
-
-            input_tensor = input_tensor[permutations]
-            target_tensor = target_tensor[:, permutations]
-
-            i = 0
-
-            while(i <= samples):
-                batch_input = input_tensor[i:i+batch_size]
-                batch_target = target_tensor[:, i:i+batch_size]
-
-                yield (batch_input, batch_target)
-                i = i + batch_size
-
-        else:
-            raise Exception("Input tensor dimension not recognized")
-
     def train(self, input_tensor, target_tensor, mini_batch_size=32,
               max_epochs=1000, logging_frequency=100, update_frequency=100,
               decay_frequency=500, layers_filename="", training_logger=None):
@@ -186,7 +151,7 @@ class Sequential():
             store_layers = False
 
         for iteration in range(1, max_epochs+1):
-            for batch in self.get_batches(input_tensor, target_tensor,
+            for batch in get_mini_batches(input_tensor, target_tensor,
                                           mini_batch_size):
                 batch_input, batch_target = batch
 

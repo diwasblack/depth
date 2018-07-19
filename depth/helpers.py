@@ -43,3 +43,44 @@ def train_test_split(input_matrix, output_matrix, test_size=0.33):
     y_test = output_matrix[training_size:]
 
     return x_train, x_test, y_train, y_test
+
+
+def get_mini_batches(input_tensor, target_tensor, batch_size):
+    """
+    Iteratively return the mini batch to use
+    """
+
+    if(len(input_tensor.shape) == 2):
+        samples = input_tensor.shape[1]
+        permutations = np.random.permutation(samples)
+
+        input_tensor = input_tensor[:, permutations]
+        target_tensor = target_tensor[:, permutations]
+
+        i = 0
+
+        while(i <= samples):
+            batch_input = input_tensor[:, i:i+batch_size]
+            batch_target = target_tensor[:, i:i+batch_size]
+
+            yield (batch_input, batch_target)
+            i = i + batch_size
+
+    elif(len(input_tensor.shape) == 4):
+        samples = input_tensor.shape[0]
+        permutations = np.random.permutation(samples)
+
+        input_tensor = input_tensor[permutations]
+        target_tensor = target_tensor[:, permutations]
+
+        i = 0
+
+        while(i <= samples):
+            batch_input = input_tensor[i:i+batch_size]
+            batch_target = target_tensor[:, i:i+batch_size]
+
+            yield (batch_input, batch_target)
+            i = i + batch_size
+
+    else:
+        raise Exception("Input tensor dimension not recognized")

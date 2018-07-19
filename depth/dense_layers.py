@@ -6,8 +6,6 @@ from .activations import (
     leaky_relu, leaky_relu_derivative,
     sigmoid_function, sigmoid_function_derivative,
     softmax_function)
-from .initializers import (
-    HeWeightInitializer, XavierWeightInitializer)
 from .layer_base import BaseLayer
 
 
@@ -41,20 +39,15 @@ class DenseLayer(BaseLayer):
         self.regularizer = regularizer
 
     def initialize_layer_weights(self):
-        # Check if input and output units are properly initalized
+        # Check if input and output units are properly initialized
         if(not(self.input_units)):
             raise Exception("Input units not provided")
 
         if(not(self.output_units)):
             raise Exception("Output units not provided")
 
-        # Select an initializer for the weights
-        if(self.activation in ["relu", "leakyrelu"]):
-            variance = np.sqrt(2.0 / self.input_units + 1)
-        elif(self.activation in ["tanh", "sigmoid"]):
-            variance = np.sqrt(2.0 / self.input_units + 1)
-        else:
-            variance = 0.5
+        variance = self.get_weights_variance(
+            self.input_units + 1, output_units=self.output_units)
 
         self.weights = np.random.randn(
             self.output_units, self.input_units+1) * variance

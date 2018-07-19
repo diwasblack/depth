@@ -41,11 +41,8 @@ class Convolution2D(BaseLayer):
     def initialize_layer_weights(self):
         input_units = self.input_shape.prod()
 
-        if(self.activation in ["relu", "leakyrelu"]):
-            variance = np.sqrt(2.0 / input_units)
-
-        elif(self.activation in ["sigmoid", "tanh"]):
-            variance = np.sqrt(1.0 / input_units)
+        # Calculate the variance to use for weights
+        variance = self.get_weights_variance(input_units)
 
         # Constuct a weights/kernel tensor
         self.weights = np.random.randn(

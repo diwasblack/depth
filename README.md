@@ -25,6 +25,10 @@ Features
     - LeakyRelu
     - Softmax
     - Linear
+- Convolution layer with activations:
+    - ReLu
+- Pooling layer
+    - Max pooling
 - Optimizers
     - Stochastic Gradient Descent
     - ADAM

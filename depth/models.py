@@ -149,8 +149,8 @@ class Sequential():
         else:
             store_layers = False
 
+        iteration = 1
         for epoch in range(1, max_epochs+1):
-            iteration = 1
             for batch in get_mini_batches(input_tensor, target_tensor,
                                           mini_batch_size):
                 batch_input, batch_target = batch
@@ -170,8 +170,8 @@ class Sequential():
                 if(training_logger):
                     accuracy = self.prediction_accuracy(
                         predicted_output, batch_target)
-                    log_message = "Iteration:{}, Loss:{}, Accuracy:{}".format(
-                        iteration, loss, accuracy)
+                    log_message = "Epoch:{}, Iteration:{}, Loss:{}, Accuracy:{}".format(
+                        epoch, iteration, loss, accuracy)
                     training_logger.info(log_message)
                 else:
                     if(iteration % logging_frequency == 0):

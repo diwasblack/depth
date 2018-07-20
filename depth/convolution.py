@@ -54,13 +54,15 @@ def convolve2d(data_tensor, kernel_tensor):
     padded_tensor = np.pad(
         data_tensor, pads, mode="constant", constant_values=0)
 
-    # Process data one at a time
-    for index in range(number_of_data):
-        for i in range(x):
-            for j in range(y):
-                for c in range(channels):
-                    data_block = padded_tensor[index, c, i:i+m, j:j+m]
-                    convolution = np.multiply(data_block, kernel_tensor[c, :, :])
-                    result[index, c, i, j] = np.sum(convolution)
+    # Add new axis for the tensor
+    # Needed to broadcast the kernel across each data sample
+    kernel_tensor = kernel_tensor[np.newaxis, :, :, :]
+
+    for i in range(x):
+        for j in range(y):
+            data_block = padded_tensor[:, :, i:i+m, j:j+m]
+            convolution = np.multiply(data_block, kernel_tensor)
+
+            result[:, :, i, j] = np.sum(convolution, axis=(2, 3))
 
     return result

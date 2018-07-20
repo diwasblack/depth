@@ -24,8 +24,8 @@ class Convolution2D(BaseLayer):
         self.non_linear_activation = True
 
         self.input_shape = np.array(input_shape)
-        self.image_size = np.array(input_shape[1:])
-        self.output_shape = np.array([self.filters, *self.image_size])
+        self.image_size = None
+        self.output_shape = None
 
         # Store the first moment and second moment
         self.first_moment = 0
@@ -51,6 +51,10 @@ class Convolution2D(BaseLayer):
     def construct_layer(self, previous_layer=None):
         if(previous_layer is not None):
             self.input_shape = previous_layer.get_output_shape()
+
+        # Calculate the output_shape
+        self.image_size = np.array(self.input_shape[1:])
+        self.output_shape = np.array([self.filters, *self.image_size])
 
         # Assumes the channel will be in the first position
         self.channels = self.input_shape[0]

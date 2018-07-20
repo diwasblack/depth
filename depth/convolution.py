@@ -12,7 +12,7 @@ def convolve2d(data_tensor, kernel_tensor):
     kernel_tensor = c * m * n
 
     output:
-    a N * x' * y' tensor
+    a N * c * x' * y' tensor
 
     where,
     N = number of samples

@@ -150,7 +150,8 @@ class Sequential():
         else:
             store_layers = False
 
-        for iteration in range(1, max_epochs+1):
+        for epoch in range(1, max_epochs+1):
+            iteration = 1
             for batch in get_mini_batches(input_tensor, target_tensor,
                                           mini_batch_size):
                 batch_input, batch_target = batch
@@ -205,6 +206,9 @@ class Sequential():
                 if(iteration % decay_frequency == 0):
                     # Decay the learning rate if needed
                     self.optimizer.decay_learning_rate()
+
+                # Increase iteration count
+                iteration += 1
 
     def predict(self, input_matrix):
         return self.forward_pass(input_matrix, store_values=False)

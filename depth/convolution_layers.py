@@ -94,6 +94,10 @@ class Convolution2D(BaseLayer):
         else:
             dloss_dz = np.copy(delta)
 
+        # Repeat the delta for each input channel/filter
+        dloss_dz_repeat = np.repeat(
+            dloss_dz[:, :, np.newaxis, :, :], self.input_shape[0], axis=2)
+
         gradient = np.zeros((
             self.samples, self.filters, self.channels, *self.kernel_shape),
             dtype=np.float32)
@@ -103,26 +107,19 @@ class Convolution2D(BaseLayer):
 
         for f in range(self.filters):
             # Seperate the delta for each channel/filter
-            dloss_dz_map = dloss_dz[:, f, :, :]
+            dloss_dz_block = dloss_dz_repeat[:, f, :, :, :]
+            delta_weights_conv = convolve2d(dloss_dz_block, self.weights[f])
 
-            # Repeat the delta across each input channel/filter
-            dloss_dz_block = np.repeat(
-                dloss_dz_map[:, np.newaxis, :, :], self.input_shape[0], axis=1)
+            # Add delta from each filter from the output layer
+            delta += delta_weights_conv
 
             for i in range(self.samples):
                 input_delta_conv = convolve2d(
                     self.input_values[i:i+1], dloss_dz_block[i])
 
-                delta_weights_conv = convolve2d(
-                    dloss_dz_block[i:i+1], self.weights[f])
-
-                # Add delta from each filter
-                delta[i] += delta_weights_conv[0]
-
                 gradient[i, f, :, :, :] = input_delta_conv[0]
 
         # Average gradient across all samples
-        # Use number of samples as normalization_factor for gradient
         gradient_avg = np.sum(gradient, axis=0) / self.samples
 
         # Cleanup memory

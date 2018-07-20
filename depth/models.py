@@ -199,6 +199,7 @@ class Sequential():
 
                 if(iteration % update_frequency == 0):
                     if(store_layers):
+                        training_logger.info("Storing layer weights")
                         # NOTE dump layers only after backpropagation update
                         self.dump_layer_weights(layers_filename)
 

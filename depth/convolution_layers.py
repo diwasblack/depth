@@ -117,11 +117,9 @@ class Convolution2D(BaseLayer):
             # Add delta from each filter from the output layer
             delta += delta_weights_conv
 
-            for i in range(self.samples):
-                input_delta_conv = convolve2d(
-                    self.input_values[i:i+1], dloss_dz_block[i])
-
-                gradient[i, f, :, :, :] = input_delta_conv[0]
+            # Store the gradient for each filter
+            input_delta_conv = convolve2d(self.input_values, dloss_dz_block)
+            gradient[:, f, :, :, :] = input_delta_conv
 
         # Average gradient across all samples
         gradient_avg = np.sum(gradient, axis=0) / self.samples

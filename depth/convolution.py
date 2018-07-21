@@ -28,8 +28,26 @@ def convolve2d(data_tensor, kernel_tensor):
     https://stackoverflow.com/questions/2448015/2d-convolution-using-python-and-numpy/42579291#42579291
     """
 
-    if(data_tensor.shape[1] != kernel_tensor.shape[0]):
-        raise Exception("Number of channels should be same")
+    if((len(data_tensor.shape) != 4)):
+        raise Exception("Dimesion mismatch for input tensor")
+
+    if(len(kernel_tensor.shape) == 4):
+        input_channels = data_tensor.shape[1]
+        kernel_channels = kernel_tensor.shape[1]
+    elif(len(kernel_tensor.shape) == 3):
+        input_channels = data_tensor.shape[1]
+        kernel_channels = kernel_tensor.shape[0]
+    else:
+        raise Exception("Dimension mismatch for kernel tensor")
+
+    if(input_channels != kernel_channels):
+        raise Exception(
+            "Number of channels for input and kernel should be same")
+
+    if(len(kernel_tensor.shape) == 3):
+        # Add new axis for the tensor
+        # Needed to broadcast the kernel across each data sample
+        kernel_tensor = kernel_tensor[np.newaxis, :, :, :]
 
     # Pad width to use for x and y axis
     pad_width = 1
@@ -37,7 +55,7 @@ def convolve2d(data_tensor, kernel_tensor):
     channels = data_tensor.shape[1]
 
     x, y = data_tensor.shape[2:4]
-    m, n = kernel_tensor.shape[1:3]
+    m, n = kernel_tensor.shape[2:4]
 
     conv_string = "{0}*{1}*{2}*{3} tensor with {1}*{4}*{5} tensor".format(
         number_of_data, channels, x, y, m, n)
@@ -53,10 +71,6 @@ def convolve2d(data_tensor, kernel_tensor):
     pads = [(0, 0), (0, 0), (pad_width, pad_width), (pad_width, pad_width)]
     padded_tensor = np.pad(
         data_tensor, pads, mode="constant", constant_values=0)
-
-    # Add new axis for the tensor
-    # Needed to broadcast the kernel across each data sample
-    kernel_tensor = kernel_tensor[np.newaxis, :, :, :]
 
     for i in range(x):
         for j in range(y):

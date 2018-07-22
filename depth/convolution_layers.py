@@ -122,13 +122,19 @@ class Convolution2D(BaseLayer):
             gradient[:, f, :, :, :] = input_delta_conv
 
         # Average gradient across all samples
-        gradient_avg = np.sum(gradient, axis=0) / self.samples
+        layer_gradient = np.sum(gradient, axis=0) / self.samples
+
+        # Add gradient from regularizer
+        if(self.regularizer):
+            layer_gradient += self.regularizer.get_derivative_value(
+                self.weights
+            )
 
         # Cleanup memory
         self.input_values = None
         self.activation_values = None
 
-        return gradient_avg, delta
+        return layer_gradient, delta
 
     def update_weights(self, weight_update):
         # Update weight of the layer

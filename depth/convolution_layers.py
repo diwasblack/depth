@@ -72,13 +72,10 @@ class Convolution2D(BaseLayer):
 
         self.samples = input_data.shape[0]
 
-        # Perform the 2D convolution of the tensors
-        z = np.zeros((self.samples, self.filters, *self.image_size))
-        for f in range(self.filters):
-            z_filter = convolve2d(input_data, self.weights[f])
+        z = convolve2d(input_data, self.weights)
 
-            # Sum up the values from the channels/filters
-            z[:, f, :, :] = np.sum(z_filter, axis=1)
+        # Sum up value from input channels/filters
+        z = np.sum(z, axis=2)
 
         # Apply activation function
         activation_values = self.activation_function(z)
@@ -102,24 +99,14 @@ class Convolution2D(BaseLayer):
         dloss_dz_repeat = np.repeat(
             dloss_dz[:, :, np.newaxis, :, :], self.input_shape[0], axis=2)
 
-        gradient = np.zeros((
-            self.samples, self.filters, self.channels, *self.kernel_shape),
-            dtype=np.float32)
+        # Convolve the delta with the weights
+        delta_weights_conv = convolve2d(dloss_dz_repeat, self.weights)
 
-        delta = np.zeros((
-            self.samples, self.channels, *self.image_size), dtype=np.float32)
+        # Convolve the input values with delta
+        gradient = convolve2d(self.input_values, dloss_dz_repeat)
 
-        for f in range(self.filters):
-            # Seperate the delta for each channel/filter
-            dloss_dz_block = dloss_dz_repeat[:, f, :, :, :]
-            delta_weights_conv = convolve2d(dloss_dz_block, self.weights[f])
-
-            # Add delta from each filter from the output layer
-            delta += delta_weights_conv
-
-            # Store the gradient for each filter
-            input_delta_conv = convolve2d(self.input_values, dloss_dz_block)
-            gradient[:, f, :, :, :] = input_delta_conv
+        # Sum delta from each output filter
+        delta = np.sum(delta_weights_conv, axis=1)
 
         # Average gradient across all samples
         layer_gradient = np.sum(gradient, axis=0) / self.samples

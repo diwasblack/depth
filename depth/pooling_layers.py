@@ -105,4 +105,4 @@ class MaxPooling(BaseLayer):
                         delta_x = delta[index, f, i, j]
                         new_delta[index, f, max_index[0], max_index[1]] = delta_x
 
-        return None, new_delta
+        return None, new_delta, None

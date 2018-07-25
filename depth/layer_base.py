@@ -58,3 +58,6 @@ class BaseLayer(ABC):
             return self.regularizer.get_cost(self.weights)
         else:
             return 0
+
+    def update_biases(self):
+        pass

@@ -179,7 +179,7 @@ class Sequential():
 
                 # Use backpropagation to propagate delta through layers
                 for layer in reversed(self.layers):
-                    gradient, delta = layer.backprop(delta)
+                    gradient, delta, layer_delta = layer.backprop(delta)
 
                     if gradient is None:
                         continue
@@ -195,6 +195,21 @@ class Sequential():
 
                     # Update layer weights
                     layer.update_weights(weight_update)
+
+                    if layer_delta is None:
+                        continue
+
+                    # Calculate the delta to use for biases
+                    dloss_db = np.average(layer_delta, axis=(0, 2, 3))
+
+                    bias_update, bias_first_moment, bias_second_moment = self.optimizer.get_updates(
+                        dloss_db, layer.bias_first_moment, layer.bias_second_moment,
+                        time_step=iteration)
+
+                    layer.bias_first_moment = bias_first_moment
+                    layer.bias_second_moment = bias_second_moment
+
+                    layer.update_biases(bias_update)
 
                 if(iteration % update_frequency == 0):
                     if(store_layers):

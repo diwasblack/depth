@@ -153,7 +153,7 @@ class DenseLayer(BaseLayer):
         self.input_values = None
         self.activation_values = None
 
-        return gradient, delta
+        return gradient, delta, None
 
     def update_weights(self, weight_update):
         # Update weight of current layer

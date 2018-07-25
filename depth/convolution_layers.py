@@ -31,6 +31,9 @@ class Convolution2D(BaseLayer):
         self.first_moment = 0
         self.second_moment = 0
 
+        self.bias_first_moment = 0
+        self.bias_second_moment = 0
+
         # Store the input and activation values during the forward pass
         self.input_values = None
         self.activation_values = None
@@ -47,6 +50,9 @@ class Convolution2D(BaseLayer):
         # Constuct a weights/kernel tensor
         self.weights = np.random.randn(
             self.filters, self.channels, *self.kernel_shape) * variance
+
+        self.biases = np.random.randn(
+            self.filters) * variance
 
     def construct_layer(self, previous_layer=None):
         if(previous_layer is not None):
@@ -76,6 +82,9 @@ class Convolution2D(BaseLayer):
 
         # Sum up value from input channels/filters
         z = np.sum(z, axis=2)
+
+        # Broadcast bias for each filter
+        z = z + self.biases[np.newaxis, :, np.newaxis, np.newaxis]
 
         # Apply activation function
         activation_values = self.activation_function(z)
@@ -121,11 +130,14 @@ class Convolution2D(BaseLayer):
         self.input_values = None
         self.activation_values = None
 
-        return layer_gradient, delta
+        return layer_gradient, delta, dloss_dz
 
     def update_weights(self, weight_update):
         # Update weight of the layer
         self.weights = self.weights - weight_update
+
+    def update_biases(self, bias_update):
+        self.biases -= bias_update
 
 
 class Flatten(BaseLayer):
@@ -162,4 +174,4 @@ class Flatten(BaseLayer):
         # Reshape the flattened deltas
         delta = delta.reshape(self.samples, *self.input_shape)
 
-        return None, delta
+        return None, delta, None

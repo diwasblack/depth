@@ -199,8 +199,11 @@ class Sequential():
                     if layer_delta is None:
                         continue
 
-                    # Calculate the delta to use for biases
-                    dloss_db = np.average(layer_delta, axis=(0, 2, 3))
+                    # Calculate the delta for bias
+                    dloss_db = np.sum(layer_delta, axis=(2, 3))
+
+                    # Average delta across samples
+                    dloss_db = np.average(dloss_db, axis=0)
 
                     bias_update, bias_first_moment, bias_second_moment = self.optimizer.get_updates(
                         dloss_db, layer.bias_first_moment, layer.bias_second_moment,
